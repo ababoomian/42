@@ -12,68 +12,29 @@ void ft_getenv(char **env)
 	
 }
 
-void cd(t_table *tab,char **read_line)
+void built_in(char **read_lide,char **env,t_table *tab, t_env **tenv)
 {
-	int i;
-
-	i = -1;
-	while (tab->env[++i])
-		if(!strncmp(tab->env[i],"OLDPWD=",7))
-			tab->env[i] = ft_strjoin("OLDPWD=",getcwd(NULL,200)); 
-	i = -1;
-	if(chdir(read_line[1]) == 0)
-	{
-		while (tab->env[++i])
-			if(!strncmp(tab->env[i],"PWD=",4))
-				tab->env[i] = ft_strjoin("PWD=",getcwd(NULL,200));
-	}
-	else
-		printf("no shuch a file or directory\n"); 
-
-}
-
-int is_digit(char *str)
-{
-	int i;
-
-	i = -1;
-	while(str[++i])
-		if(str[i] < '0' && str[i] > '9')
-			return(0);
-	return(1);		
-}
-
-void ft_exit(char **read_line)
-{
-	if(!read_line[1])
-		exit(0);
-	if(!is_digit(read_line[1]))
-	{
-		printf("exit\narguments must be numericcc ay eshh!!\n");
-		return ;
-	}
-	else if(read_line[2])
-	{
-		printf("too many argument debilll!!\n");
-		return ;
-	}
-	else
-		exit(0);
-}
-
-void built_in(char **read_lide,char **env,t_table *tab)
-{
+	//char c[1024] ;
+	//c = getcwd(NULL,0);
 	(void)env;
-	(void)tab;
 	if(!strcmp(read_lide[0],"pwd"))
-		printf("%s\n",getcwd(NULL,100));
+	{
+		char c[1024];
+		getcwd(c,1024);
+		printf("%s\n",c);
+	}
 	else if(!strcmp(read_lide[0],"cd"))
 		cd(tab,read_lide);
 	else if(!strcmp(read_lide[0],"env"))
-		ft_getenv(env);
+		print_list_tenv(*tenv);
 	else if(!strcmp(read_lide[0],"exit"))
 		ft_exit(read_lide);
-
+	else if(!strcmp(read_lide[0],"echo"))
+		ft_echo(read_lide,tab);
+	else if(!strcmp(read_lide[0],"export"))
+		ft_main_export(tenv,read_lide);
+	else if(!strcmp(read_lide[0],"unset"))
+		 multi_unset(tenv,read_lide);
 }
 
 int if_built_in(char *str)
@@ -92,59 +53,131 @@ t_table *create_table(char **env)
 
 	i = 0;
 	tab = malloc(sizeof(t_table));
-	tab->path = "sss";
+	//tab->path = "sss";
 	tab->env = env;
 	while (env[i])
 	{
 		if(strncmp("PATH=",env[i],5) == 0)
-			tab->path = env[i];
+		{
+			env[i] += 5;
+			tab->path = ft_split(env[i],':');
+		}
 		if(strncmp("PWD=",env[i],4) == 0)
 			tab->pwd = env[i];
 		i++;
 	}
+	i = -1;
+	//while(tab->path[++i])
+		//tab->path[i] = ft_strjoin(tab->path[i],"/");
 	return(tab);
 
 }
 
+int acc(t_table *tab,char *test)
+{
+	int i;
+	char *acc;
+
+	i = -1;
+	while (tab->path[++i])
+	{
+		acc = ft_strjoin(tab->path[i],test);
+		if(access(acc,(0)) == 0)
+		{
+			free(acc);
+			return(i);
+		}
+		free(acc);
+	}
+	return(-1);
+}
+
+void execution(t_table *tab,char *line,char **env, t_env *tenv)
+{
+	int i;
+	pid_t pid;
+
+	i = -1;
+	tab->cmd = ft_split(line,' ');
+			if(*tab->cmd)
+				tab->test = ft_strjoin("/",tab->cmd[0]); 
+			if(tab->test)
+				i = acc(tab,tab->test);
+				if(i != -1)
+				{
+					pid = fork();
+					if (pid ==0)
+					{
+						if(tab->test)
+							if(!if_built_in(tab->cmd[0]))
+								execve(ft_strjoin(tab ->path[i],tab->test),tab->cmd,env);
+						exit(1);
+					}
+					else
+						wait(NULL);
+				}
+			if(tab->cmd[0])
+				built_in(tab->cmd,env,tab,&tenv);
+		i = -1;
+		 while(tab->cmd[++i])
+			free(tab->cmd[i]);
+		free(tab->cmd);
+		i = -1;
+		//while(tab->path[++i])
+			//free(tab->path[i]);
+		//free(tab->path);
+		if(*tab->cmd)
+			free(tab->test);
+		free(line);
+}
+
+void handler(int sig)
+{	
+	(void)sig;
+	return ;
+}
+
 int main(int ac,char **av,char **env)
 {
-	  int i;
-     (void)av;
-	 (void)ac;
-	 t_table *tab;
-
-	 tab = create_table(env);
-	 while(1)
-	 {		
-			char	*line = readline("minishell->");
-			if (!line)
-				exit (1);
-			if (line[0])
-				add_history(line);
-			char **read_line = ft_split(line,' ');
-			char **path = ft_split(tab->path,':');
-			char *test;
-			test = NULL;
-			if(*read_line)
-				test = ft_strjoin("/",read_line[0]);
-			i = -1;
- 			while(path[++i])
-			{
-				pid_t pid = fork();
-				if (pid ==0)
-				{
-					if(test)
-					{
-						if(!if_built_in(read_line[0]))
-							execve(ft_strjoin(path[i],test),read_line,env);			
-					}
-					exit(1);
-				}
-				else
-					wait(NULL);
-			} 
-			if(read_line[0])
-				built_in(read_line,env,tab);
+	
+	
+	int i;
+    (void)av;
+	(void)ac;
+	(void)env;
+	t_table *tab;
+	t_env *tenv;
+	t_dict *dict;
+	t_nodes *nds;
+		tenv = init_env_tenv(env);
+		dict = init_dict(env);
+		tab = create_table(env);
+		printf(GREEN"wellcome to minishell\n");
+	//	signal(SIGINT,handler);
+	//	signal(SIGQUIT,handler);	
+	while(1)
+	 {	
+		char	*line = readline("😎minishell->");
+		if (!line)
+			exit (1);
+		if (line[0])
+			add_history(line);
+		else
+			continue;
+		char **pipes = ft_split(line,'|');
+		nds = init_nodes(pipes);
+		print_nodes(nds);
+		i = -1;
+		 while(pipes[++i])
+			execution(tab,pipes[i],env,tenv);
+		free(pipes);
+		if(line)
+			free(line);
+		i = -1;
+		while (nds->heardock[++i])
+			free(nds->heardock[i]);
+		free(nds->heardock);
+		free(nds);
 	 }
     return (0);
 }
