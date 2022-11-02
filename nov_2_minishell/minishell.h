@@ -55,6 +55,7 @@ typedef struct s_main
 
 typedef struct s_nodes
 {
+	char		**append;
 	char		**heardock;
 	char		**infile;
 	char		**outfile;
@@ -102,13 +103,20 @@ int			is_infile(char a, char b);
 int			is_outfile(char a, char b);
 int			metacheck(char a, char b, char c);
 int			hd_count(char *str);
-void print_list_tenv(t_env *head);
-t_env	*init_env_tenv(char **env);
-t_env	*new_dict_tenv(char *key, char *value);
-void  ft_unset(t_env **head,char *key);
-int		ft_strnequ(char const *s1, char const *s2, int n);
-char	*ft_strstr(const char *haystack, const char *needle);
-void multi_unset(t_env **tenv,char **read_line);
-void ft_main_export(t_env **tenv,char **read_line);
-void ft_export(t_env **head,char **rd);
+void		print_list_tenv(t_env *head);
+t_env		*init_env_tenv(char **env);
+t_env		*new_dict_tenv(char *key, char *value);
+void 		ft_unset(t_env **head,char *key);
+void		multi_unset(t_env **tenv,char **read_line);
+void		ft_main_export(t_env **tenv,char **read_line);
+void		ft_export(t_env **head,char **rd);
+int			hd_count(char *str);
+int			append_cnt(char *str);
+int			outfile_cnt(char *str);
+int			infile_cnt(char *str);
+char		**append_init(char *str);
+char		**infile_init(char *str);
+char		**outfile_init(char *str);
+char		**heardock_init(char *str);
+
 # endif

@@ -23,17 +23,17 @@ void built_in(char **read_lide,char **env,t_table *tab, t_env **tenv)
 		getcwd(c,1024);
 		printf("%s\n",c);
 	}
-	else if(!strcmp(read_lide[0],"cd"))
+	else if(strcmp(read_lide[0],"cd") == 0 )
 		cd(tab,read_lide);
-	else if(!strcmp(read_lide[0],"env"))
+	else if(strcmp(read_lide[0],"env") == 0)
 		print_list_tenv(*tenv);
-	else if(!strcmp(read_lide[0],"exit"))
+	else if(strcmp(read_lide[0],"exit") == 0)
 		ft_exit(read_lide);
-	else if(!strcmp(read_lide[0],"echo"))
+	else if(strcmp(read_lide[0],"echo") == 0)
 		ft_echo(read_lide,tab);
-	else if(!strcmp(read_lide[0],"export"))
+	else if(strcmp(read_lide[0],"export") == 0)
 		ft_main_export(tenv,read_lide);
-	else if(!strcmp(read_lide[0],"unset"))
+	else if(strcmp(read_lide[0],"unset") == 0)
 		 multi_unset(tenv,read_lide);
 }
 
@@ -166,7 +166,7 @@ int main(int ac,char **av,char **env)
 			continue;
 		char **pipes = ft_split(line,'|');
 		nds = init_nodes(pipes);
-		print_nodes(nds);
+		//print_nodes(nds);
 		i = -1;
 		 while(pipes[++i])
 			execution(tab,pipes[i],env,tenv);

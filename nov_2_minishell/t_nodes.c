@@ -58,7 +58,7 @@ int		hd_count(char *str)
 	}
 	return j;
 }
-char	**heardock_init(char *str)
+/* char	**heardock_init(char *str)
 {
 	int	i;
 	int j;
@@ -93,7 +93,7 @@ char	**heardock_init(char *str)
 	printf("%s\n", res);
 	//while(1);
 	return ft_split(res, ' ');
-}
+} */
 
 int		append_cnt(char *str)
 {
@@ -154,36 +154,55 @@ int		outfile_cnt(char *str)
 	return cnt;
 }
 
-/* char *parsed_str_lst(char *str)
+char *get_cleaned_str_meta(char *str)
 {
-	int	i;
 	char	*res;
-	int	trim_size;
-	int	j;
+	int		i;
+	int		j;
 
 	j = 0;
-	trim_size = ft_strlen(str) - ( heardock_cnt(str) - infile_cnt(str) - outfile_cnt(str) - append_cnt(str));
-	res = (char*)malloc(sizeof(char) * trim_size + 1);
 	i = 0;
+
 	while(str[i])
 	{
-		res[j++] = str[i];
+		if(str[i] == '<' || str[i] == '>')
+			i++;
+		j++;
 		i++;
 	}
+	i = 0;
+	res = malloc(sizeof(char) * j + 1);
+	j = 0;
+	while(str[i])
+	{
+		if(str[i] == '<' || str[i] == '>')
+		{
+			while(str[i] != ' ' && str[i])
+				i++;
+		}
+		res[j] = str[i];
+		i++;
+		j++;
+	}
 	res[j] = '\0';
-	return res;
-
-} */
-
+	return (res);
+}
  t_nodes	*new_nodes(int i,char **mx)
 {
 	t_nodes *inited;
+	char *cmd;
+	cmd = get_cleaned_str_meta(mx[i]);
 	inited = NULL;
 	inited = (t_nodes*)malloc(sizeof(t_nodes));
 	if(inited == NULL)
 		return (NULL);
-		inited->heardock = heardock_init(mx[i]);
-		inited->next = NULL;
+	inited->heardock = heardock_init(mx[i]);
+	inited->append = append_init(mx[i]);
+	inited->infile = infile_init(mx[i]);
+	inited->outfile = outfile_init(mx[i]);
+	inited->cmd = ft_split(cmd, 32);
+	free(cmd);
+	inited->next = NULL;
 	return(inited);
 }
 
