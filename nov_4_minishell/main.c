@@ -16,10 +16,7 @@ void built_in(t_nodes *nds,char **read_lide,char **env,t_env **tenv)
 {
 	(void)nds;
 	(void)env;
-	int i = -1;
-	if(nds->heardock)
-		while(nds->heardock[++i])
-			heredoc_redirect(nds->heardock[i]);
+	
 	if(!strcmp(read_lide[0],"pwd"))
 	{
 		char c[1024];
@@ -43,7 +40,7 @@ void built_in(t_nodes *nds,char **read_lide,char **env,t_env **tenv)
 int if_built_in(char *str)
 {
 	if(!strcmp(str,"pwd") || !strcmp(str,"cd") || !strcmp(str,"echo") 
-		|| !strcmp(str,"export") || !strcmp(str,"unset") || !strcmp(str,"env") || !strcmp(str,"exit") || !strcmp(str,APPEND) || !strcmp(str,INFILE) || !strcmp(str,OUTFILE) || !strcmp(str,"<<"))
+		|| !strcmp(str,"export") || !strcmp(str,"unset") || !strcmp(str,"env") || !strcmp(str,"exit") || !strcmp(str,APPEND) || !strcmp(str,INFILE) || !strcmp(str,OUTFILE) || strncmp(str,"<<",1) == 0)
 			return(1);
 	else
 		return(0);
@@ -121,6 +118,10 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 	char *cmd;
 	cmd = NULL;
 	(void)tenv;
+	int i = -1;
+	if(nds->heardock)
+		while(nds->heardock[++i])
+			heredoc_redirect(nds->heardock[i]);
 			if(nds->cmd[0])
 				cmd = acc(nds->cmd[0],tenv);
 				if(cmd != NULL)

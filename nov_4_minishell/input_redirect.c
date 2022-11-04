@@ -42,7 +42,7 @@ void	infile_redirect(char *str, char *file)
 {
 	int fd;
 
-	fd = open(file, O_RDWR | O_CREAT, 0777);
+	fd = open(file, O_RDWR | O_CREAT, 0644);
 	if(fd > 0)
 	{
 		write(fd, str, ft_strlen(str));
@@ -63,42 +63,15 @@ void	outfile_redirect(char *str)
 	if(s)
 		dup2(0, fd);
 	s = gnl(fd);
-	//read(0,s,ft_strlen(s));
 	close(fd);
 	free(s);
 }
-/* static char	*gnl_nl(int fd)
-{
-	int	rd;
-	int	i;
-	char	*s;
-	char	ch;
-	int	len;
 
-	rd = 0;
-	i = 0;
-	len = 0;
-	s = malloc(10000);
-	rd = 0;
-	while((rd = read(fd, &ch, 1)) > 0)
-	{
-		s[i++] = ch;
-		if(ch == '\n')
-			break ;
-	}
-	if((!s[i - 1] && !rd) || rd == -1)
-	{
-		free(s);
-		return (NULL);
-	}
-	s[i] = '\0';
-	return (s);
-} */
 void	append_redirect(char *str, char *file)
 {
 	int fd;
 
-	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 0777);
+	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 0644);
 	if(fd > 0)
 	{
 		write(fd, str, ft_strlen(str));
@@ -111,10 +84,25 @@ void	append_redirect(char *str, char *file)
 void	heredoc_redirect(char *str)
 {
 	char *s;
-	int fd = open(".heredoc", O_RDWR | O_CREAT, 0777);
+	int fd;
+	int	i;
+
+	i = 0;
+	str+=2;
+	while(str[i])
+	{
+		if(str[i] == '<' || str[i] == '>' || str[i] == '-')
+		{
+			printf("%s\n", "syntax error near unexpected token `<'");
+			return ;
+		}
+		i++;
+	}
+	fd = open(".heredoc", O_RDWR | O_CREAT, 0644);
+	printf("heredoc-redirect: %s\n", str);
 	while(1)
 	{
-		s = readline(CYELLOW"hrd>"GREEN);
+		s = readline(CYELLOW"heredoc: "GREEN);
 		if(!strcmp(str, s))
 		{
 			write(fd, str, ft_strlen(str));
@@ -124,5 +112,6 @@ void	heredoc_redirect(char *str)
 		s = NULL;
 	}
 	dup2(0, fd);
+	unlink(".heredoc");
 	close(fd);
 }

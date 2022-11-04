@@ -32,7 +32,7 @@ char	**heardock_init(char *str)
 		i++;
 	}
 	res[j] = '\0';
-	//printf("%s\n", res);
+	printf("heredoc-init: %s\n", res);
 	//while(1);
 	return ft_split(res, ' ');
 }
