@@ -1,27 +1,17 @@
 # include "./minishell.h"
 
-void g_to_home(t_table *tab,char **rl)
+void g_to_home(t_env **tab,char **rl)
 {
-	int i;
-
-	tab->home = "";
-	i  = -1;
-	while (tab->env[++i])
-		if(!strncmp(tab->env[i],"HOME",4))
-		{
-			tab->env[i] += 5;
-			tab->home =ft_strjoin(tab->home,tab->env[i]);
-		}
 	if(!rl[1])
-		chdir(tab->home);
+		chdir(find_val_by_key(tab,"HOME"));
 	else if(ft_strlen(rl[1]) > 2)
 	{
 		rl[1] += 2;
-		chdir(tab->home);
+		chdir(find_val_by_key(tab,"HOME"));
 		chdir(rl[1]);
 	}
 	else
-		chdir(tab->home);
+		chdir(find_val_by_key(tab,"HOME"));
 }
 
 /*void to_home_env(t_table *tab,char **rl)
@@ -44,37 +34,66 @@ void g_to_home(t_table *tab,char **rl)
 	
 } */
 
-void cd(t_table *tab,char **read_line)
+char *find_val_by_key(t_env **tenv,char *key)
+{
+	t_env *head;
+	char *res;
+	
+	res = NULL;
+	head = *tenv;
+	while (*tenv != NULL)
+	{
+		if (strcmp((*tenv)->key,key) == 0)
+		{
+			ft_strlcpy(res,(*tenv)->value,ft_strlen((*tenv)->value));
+			break ;
+		}
+		*tenv = (*tenv)->next;
+	}
+	*tenv = head;
+	return(res);
+}
+
+void change_val_by_key(t_env **tenv,char *key,char *val)
+{
+	//char *res;
+	//res = NULL;
+	t_env *head;
+
+	head  = *tenv;
+	while( *tenv != NULL)
+	{
+		if (strcmp((*tenv)->key,key) == 0)
+		{
+			(*tenv)->value = strdup(val);
+			break ;
+		}
+		*tenv = (*tenv)->next;
+	}
+	*tenv = head;
+}
+
+void cd(t_env **tenv,char **read_line)
 {
 	int i;
 	char c[1024];
-	//char *str;
 	getcwd(c,1024);
 	i = -1;
-	while (tab->env[++i])
-		if(!strncmp(tab->env[i],"OLDPWD=",7))
-		{
-			tab->pwd  =c;
-			tab->env[i] = ft_strjoin("OLDPWD=",c);
-		}
+	change_val_by_key(tenv,"OLDPWD",c);
 	i = -1;
 	if(read_line[1])
 		while(*read_line[1] && *read_line[1] == 32)
 			read_line++;
 	if(!read_line[1] || *read_line[1] == '~' || *read_line[1] == '-')
 	{
-		g_to_home(tab,read_line);
+		g_to_home(tenv,read_line);
 		return;
 	}
 	
 	else if(chdir(read_line[1]) == 0)
 	{
-		while (tab->env[++i])
-			if(!strncmp(tab->env[i],"PWD=",4))
-			{				
-				getcwd(c,1024);
-				tab->env[i] = ft_strjoin("PWD=",c);
-			}
+		getcwd(c,1024);
+		change_val_by_key(tenv,"PWD",getcwd(c,1024));
 	}
 	else
 		printf(CYELLOW"no shuch a file or directory\n"GREEN); 

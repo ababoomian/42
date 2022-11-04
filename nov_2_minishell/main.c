@@ -12,11 +12,14 @@ void ft_getenv(char **env)
 	
 }
 
-void built_in(char **read_lide,char **env,t_table *tab, t_env **tenv)
+void built_in(t_nodes *nds,char **read_lide,char **env,t_env **tenv)
 {
-	//char c[1024] ;
-	//c = getcwd(NULL,0);
+	(void)nds;
 	(void)env;
+	int i = -1;
+	if(nds->heardock)
+		while(nds->heardock[++i])
+			heredoc_redirect(nds->heardock[i]);
 	if(!strcmp(read_lide[0],"pwd"))
 	{
 		char c[1024];
@@ -24,13 +27,13 @@ void built_in(char **read_lide,char **env,t_table *tab, t_env **tenv)
 		printf("%s\n",c);
 	}
 	else if(strcmp(read_lide[0],"cd") == 0 )
-		cd(tab,read_lide);
+		cd(tenv,read_lide);
 	else if(strcmp(read_lide[0],"env") == 0)
 		print_list_tenv(*tenv);
 	else if(strcmp(read_lide[0],"exit") == 0)
 		ft_exit(read_lide);
 	else if(strcmp(read_lide[0],"echo") == 0)
-		ft_echo(read_lide,tab);
+		ft_echo(read_lide,*tenv);
 	else if(strcmp(read_lide[0],"export") == 0)
 		ft_main_export(tenv,read_lide);
 	else if(strcmp(read_lide[0],"unset") == 0)
@@ -40,7 +43,7 @@ void built_in(char **read_lide,char **env,t_table *tab, t_env **tenv)
 int if_built_in(char *str)
 {
 	if(!strcmp(str,"pwd") || !strcmp(str,"cd") || !strcmp(str,"echo") 
-		|| !strcmp(str,"export") || !strcmp(str,"unset") || !strcmp(str,"env") || !strcmp(str,"exit") )
+		|| !strcmp(str,"export") || !strcmp(str,"unset") || !strcmp(str,"env") || !strcmp(str,"exit") || !strcmp(str,APPEND) || !strcmp(str,INFILE) || !strcmp(str,OUTFILE) || !strcmp(str,"<<"))
 			return(1);
 	else
 		return(0);
@@ -53,7 +56,6 @@ t_table *create_table(char **env)
 
 	i = 0;
 	tab = malloc(sizeof(t_table));
-	//tab->path = "sss";
 	tab->env = env;
 	while (env[i])
 	{
@@ -73,62 +75,74 @@ t_table *create_table(char **env)
 
 }
 
-int acc(t_table *tab,char *test)
+char **find_path(t_env *tenv)
+{
+	char **res;
+	res = NULL;
+	while (tenv != NULL)
+	{
+		if(strcmp(tenv->key,"PATH") == 0)
+		{
+			res = ft_split(tenv->value,':');
+			break;
+		}
+		tenv = tenv->next;
+	}
+	return(res);
+	
+
+}
+
+char  *acc(char *cmd,t_env *tenv)
 {
 	int i;
 	char *acc;
+	char **path;
 
 	i = -1;
-	while (tab->path[++i])
+	path = find_path(tenv);
+	if(path == NULL)
+		return(NULL);
+	else if(cmd[0] == '/')
+		return(cmd);
+	while (path[++i])
 	{
-		acc = ft_strjoin(tab->path[i],test);
+		acc = ft_strjoin(path[i],ft_strjoin("/",cmd));
 		if(access(acc,(0)) == 0)
-		{
-			free(acc);
-			return(i);
-		}
+			return(acc);
 		free(acc);
 	}
-	return(-1);
+	return(NULL);
 }
 
-void execution(t_table *tab,char *line,char **env, t_env *tenv)
+void execution(t_nodes *nds,char **env, t_env *tenv)
 {
-	int i;
 	pid_t pid;
-
-	i = -1;
-	tab->cmd = ft_split(line,' ');
-			if(*tab->cmd)
-				tab->test = ft_strjoin("/",tab->cmd[0]); 
-			if(tab->test)
-				i = acc(tab,tab->test);
-				if(i != -1)
+	char *cmd;
+	cmd = NULL;
+	(void)tenv;
+			if(nds->cmd[0])
+				cmd = acc(nds->cmd[0],tenv);
+				if(cmd != NULL)
 				{
 					pid = fork();
 					if (pid ==0)
 					{
-						if(tab->test)
-							if(!if_built_in(tab->cmd[0]))
-								execve(ft_strjoin(tab ->path[i],tab->test),tab->cmd,env);
+						if(nds->cmd[0])
+							if(!if_built_in(nds->cmd[0]))
+							{
+								if(nds->cmd[0][0] == '/')
+									execve(nds->cmd[0],nds->cmd,env);
+								else
+									execve(cmd,nds->cmd,env);
+							}
 						exit(1);
 					}
 					else
 						wait(NULL);
 				}
-			if(tab->cmd[0])
-				built_in(tab->cmd,env,tab,&tenv);
-		i = -1;
-		 while(tab->cmd[++i])
-			free(tab->cmd[i]);
-		free(tab->cmd);
-		i = -1;
-		//while(tab->path[++i])
-			//free(tab->path[i]);
-		//free(tab->path);
-		if(*tab->cmd)
-			free(tab->test);
-		free(line);
+		 	if(nds->cmd[0])
+				built_in(nds,nds->cmd,env,&tenv);
 }
 
 void handler(int sig)
@@ -139,22 +153,13 @@ void handler(int sig)
 
 int main(int ac,char **av,char **env)
 {
-	
-	
-	int i;
     (void)av;
 	(void)ac;
-	(void)env;
-	t_table *tab;
 	t_env *tenv;
-	t_dict *dict;
 	t_nodes *nds;
-		tenv = init_env_tenv(env);
-		dict = init_dict(env);
-		tab = create_table(env);
-		printf(GREEN"wellcome to minishell\n");
-	//	signal(SIGINT,handler);
-	//	signal(SIGQUIT,handler);	
+
+	tenv = init_env_tenv(env);		
+	printf(GREEN"wellcome to minishell\n");
 	while(1)
 	 {	
 		char	*line = readline("😎minishell->");
@@ -166,18 +171,13 @@ int main(int ac,char **av,char **env)
 			continue;
 		char **pipes = ft_split(line,'|');
 		nds = init_nodes(pipes);
-		//print_nodes(nds);
-		i = -1;
-		 while(pipes[++i])
-			execution(tab,pipes[i],env,tenv);
-		free(pipes);
-		if(line)
-			free(line);
-		i = -1;
-		while (nds->heardock[++i])
-			free(nds->heardock[i]);
-		free(nds->heardock);
-		free(nds);
+		print_nodes(nds);
+		while(nds!= NULL)
+		{
+			if(nds)
+				execution(nds,env,tenv);
+			nds = nds->next;
+		}
 	 }
     return (0);
 }

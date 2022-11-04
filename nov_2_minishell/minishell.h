@@ -67,13 +67,13 @@ typedef struct s_nodes
 
 
 void		ft_getenv(char **env);
-void 		cd(t_table *tab,char **read_line);
-void 		execution(t_table *tab,char *line,char **env,t_env *tenv);
-void 		built_in(char **read_lide,char **env,t_table *tab, t_env **tenv);
+void 		cd(t_env **tab,char **read_line);
+void 		execution(t_nodes *nds,char **env,t_env *tenv);
+void 		built_in(t_nodes *nds,char **read_lide,char **env,t_env **tenv);
 int 		ft_exit(char **read_line);
 int		 	is_digit(char *str);
 int		 	if_built_in(char *str);
-int 		acc(t_table *tab,char *test);
+char  		*acc(char *cmd,t_env *tenv);
 int 		mat_len(char **str);
 int 		ft_abs(long i);
 int 		ft_isdigit(char c);
@@ -83,7 +83,7 @@ char		*ft_strjoin(char *s1, char const *s2);
 char		**ft_split(char *s, char c);
 size_t		ft_strlen(const char *s);
 t_table		*create_table(char **env);
-void 		ft_echo(char **line,t_table *tab);
+void 		ft_echo(char **line,t_env *tab);
 char		**ft_smart_split(char const *s, char c);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 size_t		ft_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -93,7 +93,6 @@ char		*get_value_env(char *env);
 t_dict		*new_dict(char *key, char *value);
 t_dict		*init_dict(char **env);
 void		print_nodes(t_nodes *head);
-void 		cd(t_table *tab,char **read_line);
 char		*parsed_str_lst(char *str);
 t_nodes		*new_nodes( int i,char **mx);
 t_nodes		*init_nodes(char **mx);
@@ -118,5 +117,8 @@ char		**append_init(char *str);
 char		**infile_init(char *str);
 char		**outfile_init(char *str);
 char		**heardock_init(char *str);
+char 		*find_val_by_key(t_env **tenv,char *key);
+void	append_redirect(char *str, char *file);
+void	heredoc_redirect(char *str);
 
 # endif

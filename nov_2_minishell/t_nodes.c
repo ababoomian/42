@@ -12,9 +12,10 @@ void print_nodes(t_nodes *head) {
 		i = -1;
 		while(current->heardock[++i])
 	    	printf(CYELLOW"heredoc: %d : %s\n"GREEN,i,current->heardock[i]);
-		//i = -1;
-		//while(current->cmd[++i])
-			//printf(CYELLOW"cmd : %s\n"GREEN,current->cmd[i]);
+
+		i = -1;
+		while(current->cmd[++i])
+			printf(CYELLOW"cmd : %s\n"GREEN,current->cmd[i]);
         current = current->next;
     }
 }
@@ -200,7 +201,7 @@ char *get_cleaned_str_meta(char *str)
 	inited->append = append_init(mx[i]);
 	inited->infile = infile_init(mx[i]);
 	inited->outfile = outfile_init(mx[i]);
-	inited->cmd = ft_split(cmd, 32);
+	inited->cmd = ft_smart_split(cmd, 32);
 	free(cmd);
 	inited->next = NULL;
 	return(inited);

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void ft_echo(char **line,t_table *tab)
+void ft_echo(char **line,t_env *tab)
 {
 	(void) tab;
 	int i = 0;
