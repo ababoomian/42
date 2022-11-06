@@ -120,5 +120,7 @@ char		**heardock_init(char *str);
 char 		*find_val_by_key(t_env **tenv,char *key);
 void	append_redirect(char *str, char *file);
 void	heredoc_redirect(char *str);
-
+void	infile_redirect(char *file,int fd_s);
+char	*gnl(int fd);
+int	gnl_cnt(int fd);
 # endif

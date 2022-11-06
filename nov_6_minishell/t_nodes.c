@@ -16,6 +16,9 @@ void print_nodes(t_nodes *head) {
 		i = -1;
 		while(current->cmd[++i])
 			printf(CYELLOW"cmd : %s\n"GREEN,current->cmd[i]);
+		i = -1;
+		while(current->infile[++i])
+			printf(CYELLOW"inn: %s"GREEN,current->infile[i]);
         current = current->next;
     }
 }

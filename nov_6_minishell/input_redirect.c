@@ -24,9 +24,8 @@ char	*gnl(int fd)
 	rd = 0;
 	i = 0;
 	len = 0;
-
 	s = malloc(gnl_cnt(fd) + 1);
-	rd = 0;
+	//s = malloc(10000);
 	while((rd = read(fd, &ch, 1)) > 0)
 		s[i++] = ch;
 	if((!s[i - 1] && !rd) || rd == -1)
@@ -35,20 +34,16 @@ char	*gnl(int fd)
 		return (NULL);
 	}
 	s[i] = '\0';
+	printf("result of gnl %s\n", s);
 	return (s);
 }
 
-void	infile_redirect(char *str, char *file)
+ void	infile_redirect(char *file,int fd_s)
 {
-	int fd;
-
-	fd = open(file, O_RDWR | O_CREAT, 0644);
-	if(fd > 0)
-	{
-		write(fd, str, ft_strlen(str));
-		close(fd);
-	}
-	return ;
+	 (void) fd_s;
+	int fd = open(++file,O_WRONLY | O_CREAT | O_TRUNC , 0644);
+	dup2(fd,1);
+	close(fd);	
 }
 
 void	outfile_redirect(char *str)

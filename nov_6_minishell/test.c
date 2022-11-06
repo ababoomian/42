@@ -42,6 +42,7 @@ char *gnl(int fd)
         return (NULL);
     }
     buffer[i] =  '\0';
+	close(fd);
     return(buffer);
 }
 

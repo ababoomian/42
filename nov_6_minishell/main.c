@@ -1,4 +1,4 @@
-# include "minishell.h"
+# include "./minishell.h"
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -27,7 +27,7 @@ void built_in(t_nodes *nds,char **read_lide,char **env,t_env **tenv)
 		cd(tenv,read_lide);
 	else if(strcmp(read_lide[0],"env") == 0)
 		print_list_tenv(*tenv);
-	else if(strcmp(read_lide[0],"exit") == 0)
+	else if(!strcmp(read_lide[0],"exit"))
 		ft_exit(read_lide);
 	else if(strcmp(read_lide[0],"echo") == 0)
 		ft_echo(read_lide,*tenv);
@@ -122,6 +122,8 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 	if(nds->heardock)
 		while(nds->heardock[++i])
 			heredoc_redirect(nds->heardock[i]);
+		 	if(nds->cmd[0])
+				built_in(nds,nds->cmd,env,&tenv);
 			if(nds->cmd[0])
 				cmd = acc(nds->cmd[0],tenv);
 				if(cmd != NULL)
@@ -142,8 +144,6 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 					else
 						wait(NULL);
 				}
-		 	if(nds->cmd[0])
-				built_in(nds,nds->cmd,env,&tenv);
 }
 
 void handler(int sig)
@@ -156,6 +156,7 @@ int main(int ac,char **av,char **env)
 {
     (void)av;
 	(void)ac;
+	int fd_tmp;
 	t_env *tenv;
 	t_nodes *nds;
 
@@ -175,7 +176,36 @@ int main(int ac,char **av,char **env)
 		print_nodes(nds);
 		while(nds!= NULL)
 		{
-			if(nds)
+			int i ;
+			i = -1;
+			
+				//continue ;
+			
+			if(*nds->infile)
+			{	
+				fd_tmp = dup(1);
+				while(nds->infile[++i])
+				{
+					 infile_redirect(nds->infile[i],fd_tmp); 
+					if(nds)
+						execution(nds,env,tenv);
+					/* int fd_log = open (++nds->infile[i], O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU |S_IRGRP, 0644);
+					if (fd_log < 0) {
+					perror (++nds->infile[i]);
+					} else {
+					int fd_stdout = fileno (stdout);
+					fflush (stdout);
+					close (fd_stdout);
+					int fd_new = dup (fd_log);
+					close (fd_log);
+					fprintf (stderr, "fd_stdout %d, fd_log %d, fd_new %dn\n",
+					fd_stdout, fd_log, fd_new); */
+					/* fflush (stdout); */
+				}
+				dup2(fd_tmp,1);
+				
+			}
+			else
 				execution(nds,env,tenv);
 			nds = nds->next;
 		}
