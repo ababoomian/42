@@ -2,6 +2,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+int shlvl = 1;
+
+
 void ft_getenv(char **env)
 {
 	int	i;
@@ -118,10 +121,7 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 	char *cmd;
 	cmd = NULL;
 	(void)tenv;
-	int i = -1;
-	if(nds->heardock)
-		while(nds->heardock[++i])
-			heredoc_redirect(nds->heardock[i]);
+	
 		 	if(nds->cmd[0])
 				built_in(nds,nds->cmd,env,&tenv);
 			if(nds->cmd[0])
@@ -154,6 +154,7 @@ void handler(int sig)
 
 int main(int ac,char **av,char **env)
 {
+	shlvl++;
     (void)av;
 	(void)ac;
 	int fd_tmp;
@@ -161,7 +162,7 @@ int main(int ac,char **av,char **env)
 	t_nodes *nds;
 
 	tenv = init_env_tenv(env);		
-	printf(GREEN"wellcome to minishell\n");
+	printf(GREEN"wellcome to minishell : %d\n",shlvl);
 	while(1)
 	 {	
 		char	*line = readline("😎minishell->");
@@ -178,29 +179,21 @@ int main(int ac,char **av,char **env)
 		{
 			int i ;
 			i = -1;
-			
 				//continue ;
+				 i = -1;
+				if(*nds->heardock)
+					while(nds->heardock[++i])
+						heredoc_redirect(nds->heardock[i]);
 			
 			if(*nds->infile)
 			{	
+				i = -1;
 				fd_tmp = dup(1);
 				while(nds->infile[++i])
 				{
 					 infile_redirect(nds->infile[i],fd_tmp); 
 					if(nds)
 						execution(nds,env,tenv);
-					/* int fd_log = open (++nds->infile[i], O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU |S_IRGRP, 0644);
-					if (fd_log < 0) {
-					perror (++nds->infile[i]);
-					} else {
-					int fd_stdout = fileno (stdout);
-					fflush (stdout);
-					close (fd_stdout);
-					int fd_new = dup (fd_log);
-					close (fd_log);
-					fprintf (stderr, "fd_stdout %d, fd_log %d, fd_new %dn\n",
-					fd_stdout, fd_log, fd_new); */
-					/* fflush (stdout); */
 				}
 				dup2(fd_tmp,1);
 				

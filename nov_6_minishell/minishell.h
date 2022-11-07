@@ -55,6 +55,9 @@ typedef struct s_main
 
 typedef struct s_nodes
 {
+	int			input;
+	int			output;
+	int			index;
 	char		**append;
 	char		**heardock;
 	char		**infile;

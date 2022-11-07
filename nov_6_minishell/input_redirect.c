@@ -107,6 +107,6 @@ void	heredoc_redirect(char *str)
 		s = NULL;
 	}
 	dup2(0, fd);
-	unlink(".heredoc");
+	//unlink(".heredoc");
 	close(fd);
 }
