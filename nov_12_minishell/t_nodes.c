@@ -10,6 +10,8 @@ void print_nodes(t_nodes *head) {
    	while ( current != NULL ) 
 	{
 		i = -1;
+		printf("index : %d\n",current->index);
+	//	printf("next index: %d\n",current->next->index);
 		while(current->heardock[++i])
 	    	printf(CYELLOW"heredoc: %d : %s\n"GREEN,i,current->heardock[i]);
 
@@ -205,6 +207,7 @@ char *get_cleaned_str_meta(char *str)
 	inited->infile = infile_init(mx[i]);
 	inited->outfile = outfile_init(mx[i]);
 	inited->cmd = ft_smart_split(cmd, 32);
+	inited->index = i;
 	free(cmd);
 	inited->next = NULL;
 	return(inited);
@@ -217,17 +220,16 @@ t_nodes *init_nodes(char **mx)
 	t_nodes *inited;
 	t_nodes *tmp;
 	inited = NULL;
-	//inited = (t_nodes*)malloc(sizeof(t_nodes));
 	len = mat_len(mx);
 	i = 0;
 	inited = new_nodes(i,mx);
 	tmp = inited;
 	while(++i < len)
 	{
-		tmp = new_nodes(i,mx);
-		tmp = inited->next;
+		tmp->next = new_nodes(i,mx);
+		tmp = tmp->next;
 	}
-	//inited->next = NULL;
+	tmp = inited;
 	return inited;
 }
 

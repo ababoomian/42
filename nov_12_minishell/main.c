@@ -3,6 +3,7 @@
 # include <readline/history.h>
 
 int shlvl = 1;
+int sigint = 0;
 
 
 void ft_getenv(char **env)
@@ -115,6 +116,67 @@ char  *acc(char *cmd,t_env *tenv)
 	return(NULL);
 }
 
+void do_hrd(t_nodes *nds)
+{
+	int i;
+	i = -1;
+	if(*nds->heardock)
+	{
+				
+		while(nds->heardock[++i])
+			heredoc_redirect(nds->heardock[i]);			
+	}
+	
+}
+
+void do_outfile(t_nodes *nds,t_env *tenv,char **env)
+{
+	int fd_tmp;
+		int i;
+
+		i = -1;
+		if(*nds->infile)
+			{	
+				i = -1;
+				fd_tmp = dup(1);
+				while(nds->infile[++i])
+				{
+					outfile_redirect(nds->infile[i]); 
+					if(nds)
+						execution(nds,env,tenv);
+				}
+				dup2(fd_tmp,1);
+				
+			}
+			else
+				execution(nds,env,tenv);
+}
+
+void do_infile(t_nodes *nds,t_env *tenv,char **env)
+{
+		int fd_tmp;
+		int i;
+
+		i = -1;
+		if(*nds->infile)
+			{	
+				i = -1;
+				fd_tmp = dup(1);
+				while(nds->infile[++i])
+				{
+					 infile_redirect(nds->infile[i],fd_tmp); 
+					if(nds)
+						execution(nds,env,tenv);
+				}
+				dup2(fd_tmp,1);
+				
+			}
+			else
+				execution(nds,env,tenv);
+
+}
+
+
 void execution(t_nodes *nds,char **env, t_env *tenv)
 {
 	pid_t pid;
@@ -131,10 +193,11 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 					pid = fork();
 					if (pid ==0)
 					{
+						signal(SIGINT,handler);
 						if(nds->cmd[0])
 							if(!if_built_in(nds->cmd[0]))
 							{
-								if(nds->cmd[0][0] == '/')
+								if(nds->cmd[0][0] == '/' || nds->cmd[0][0] == '.')
 									execve(nds->cmd[0],nds->cmd,env);
 								else
 									execve(cmd,nds->cmd,env);
@@ -149,6 +212,17 @@ void execution(t_nodes *nds,char **env, t_env *tenv)
 void handler(int sig)
 {	
 	(void)sig;
+	sigint  = 1;
+/* 	 int pid = fork();
+	if(pid == 0)
+	{
+		printf("\n \v");
+		exit(0);
+	}
+	else
+		wait(NULL);
+ */	//exit(0);
+	//exit(1); 
 	return ;
 }
 
@@ -157,7 +231,7 @@ int main(int ac,char **av,char **env)
 	shlvl++;
     (void)av;
 	(void)ac;
-	int fd_tmp;
+	int cpy;
 	t_env *tenv;
 	t_nodes *nds;
 
@@ -172,35 +246,20 @@ int main(int ac,char **av,char **env)
 			add_history(line);
 		else
 			continue;
+		cpy = dup(0);
 		char **pipes = ft_split(line,'|');
 		nds = init_nodes(pipes);
-		print_nodes(nds);
 		while(nds!= NULL)
 		{
-			int i ;
-			i = -1;
-				//continue ;
-				 i = -1;
-				if(*nds->heardock)
-					while(nds->heardock[++i])
-						heredoc_redirect(nds->heardock[i]);
-			
-			if(*nds->infile)
-			{	
-				i = -1;
-				fd_tmp = dup(1);
-				while(nds->infile[++i])
-				{
-					 infile_redirect(nds->infile[i],fd_tmp); 
-					if(nds)
-						execution(nds,env,tenv);
-				}
-				dup2(fd_tmp,1);
-				
-			}
-			else
-				execution(nds,env,tenv);
+			int i = -1;
+			do_hrd(nds);
+			do_infile(nds,tenv,env);
+			if(*nds->append)
+				while(nds->append[++i])
+					append_redirect(nds->append[i]);
+				//do_outfile(nds,tenv,env);
 			nds = nds->next;
+			dup2(cpy,0);
 		}
 	 }
     return (0);

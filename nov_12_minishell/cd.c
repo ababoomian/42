@@ -2,6 +2,8 @@
 
 void g_to_home(t_env **tab,char **rl)
 {
+	//printf("%stestt!\n",find_val_by_key(tab,"HOME"));
+	//print_list_tenv(*tab);
 	if(!rl[1])
 		chdir(find_val_by_key(tab,"HOME"));
 	else if(ft_strlen(rl[1]) > 2)
@@ -39,14 +41,16 @@ char *find_val_by_key(t_env **tenv,char *key)
 	t_env *head;
 	char *res;
 	
-	res = NULL;
+	res = "";
 	head = *tenv;
 	while (*tenv != NULL)
 	{
 		if (strcmp((*tenv)->key,key) == 0)
 		{
-			ft_strlcpy(res,(*tenv)->value,ft_strlen((*tenv)->value));
-			break ;
+			//printf("vallll%s",(*tenv)->value);
+			res = ft_strjoin(res,(*tenv)->value);
+			//ft_strlcpy(res,(*tenv)->value,ft_strlen((*tenv)->value));
+			return(res);
 		}
 		*tenv = (*tenv)->next;
 	}
@@ -79,6 +83,7 @@ void cd(t_env **tenv,char **read_line)
 	char c[1024];
 	getcwd(c,1024);
 	i = -1;
+	printf(CYELLOW"%stestt!\n"GREEN,find_val_by_key(tenv,"HOME"));
 	change_val_by_key(tenv,"OLDPWD",c);
 	i = -1;
 	if(read_line[1])

@@ -52,32 +52,39 @@ void	outfile_redirect(char *str)
 	char	*s;
 	s = NULL;
 
-	fd = open(str, O_RDONLY);
+	fd = open(++str, O_RDONLY);
 	if(fd == -1)
 		return ;
-	if(s)
-		dup2(0, fd);
+	//if(s)
+		dup2(1, fd);
 	s = gnl(fd);
+	write(1,s,ft_strlen(s));
 	close(fd);
 	free(s);
 }
 
-void	append_redirect(char *str, char *file)
+void	append_redirect(char *file)
 {
 	int fd;
 
-	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 0644);
+	fd = open(++file, O_RDWR | O_APPEND, 0644);
 	if(fd > 0)
 	{
-		write(fd, str, ft_strlen(str));
+		dup2(fd,1);
 		write(fd, "\n", 1);
 		close(fd);
+	}
+	else
+	{
+		write(2,"no such a file or directory\n",29);
+		return ;
 	}
 	return ;
 }
 
 void	heredoc_redirect(char *str)
 {
+	//int cpy = dup(0);
 	char *s;
 	int fd;
 	int	i;
@@ -93,20 +100,23 @@ void	heredoc_redirect(char *str)
 		}
 		i++;
 	}
-	fd = open(".heredoc", O_RDWR | O_CREAT, 0644);
+	fd = open(".heredoc", O_RDWR | O_CREAT | O_TRUNC, 0644);
 	printf("heredoc-redirect: %s\n", str);
+
 	while(1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);
-		if(!strcmp(str, s))
-		{
-			write(fd, str, ft_strlen(str));
+		if(strcmp(str, s) == 0)
 			break;
-		}
+		write(fd, s, ft_strlen(s));
+		write(fd,"\n",1);
 		free(s);
 		s = NULL;
 	}
-	dup2(0, fd);
-	//unlink(".heredoc");
+
 	close(fd);
+	fd = open(".heredoc",O_RDONLY );
+	dup2(fd, 0);
+	close(fd);
+	unlink(".heredoc");
 }
