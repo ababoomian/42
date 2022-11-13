@@ -130,4 +130,8 @@ char 		*find_val_by_key(t_env **tenv,char *key);
 void		print_err(char *str);
 void		append_redirect(char *file);
 void		outfile_redirect(char *str);
+void single_proc(t_nodes *nds,t_env *tenv,char **env);
+void multi_proc(t_nodes *nds,t_env *tenv,char **env);
+void do_hrd(t_nodes *nds);
+void do_infile(t_nodes *nds,t_env *tenv,char **env);
 # endif

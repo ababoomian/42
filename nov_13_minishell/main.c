@@ -249,7 +249,11 @@ int main(int ac,char **av,char **env)
 		cpy = dup(0);
 		char **pipes = ft_split(line,'|');
 		nds = init_nodes(pipes);
-		while(nds!= NULL)
+		if(mat_len(pipes) == 1)
+			single_proc(nds,tenv,env);
+		else
+			multi_proc(nds,tenv,env);
+		/* while(nds!= NULL)
 		{
 			int i = -1;
 			do_hrd(nds);
@@ -260,7 +264,7 @@ int main(int ac,char **av,char **env)
 				//do_outfile(nds,tenv,env);
 			nds = nds->next;
 			dup2(cpy,0);
-		}
+		} */
 	 }
     return (0);
 }
