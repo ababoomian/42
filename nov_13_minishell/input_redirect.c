@@ -88,7 +88,9 @@ void	heredoc_redirect(char *str)
 	char *s;
 	int fd;
 	int	i;
+	char *file;
 
+	file = ft_strjoin(".",str);
 	i = 0;
 	str+=2;
 	while(str[i])
@@ -100,8 +102,8 @@ void	heredoc_redirect(char *str)
 		}
 		i++;
 	}
-	fd = open(".heredoc", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("heredoc-redirect: %s\n", str);
+	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("heredoc-redirect: %s : %d\n", str,fd);
 
 	while(1)
 	{
@@ -115,8 +117,9 @@ void	heredoc_redirect(char *str)
 	}
 
 	close(fd);
-	fd = open(".heredoc",O_RDONLY );
+	fd = open(file,O_RDONLY );
 	dup2(fd, 0);
 	close(fd);
-	unlink(".heredoc");
+	unlink(file);
+	free(file);
 }

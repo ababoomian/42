@@ -54,11 +54,13 @@ void single_proc(t_nodes *nds,t_env *tenv,char **env)
 	cpy = dup(0);
 	if(nds)
 	{
+			printf("helo1\n");
 			do_hrd(nds);
 			do_infile(nds,tenv,env);
-			if(*nds->append)
-				while(nds->append[++i])
-					append_redirect(nds->append[i]);
+			printf("helo2\n");
+			//if(*nds->append)
+				//while(nds->append[++i])
+					//append_redirect(nds->append[i]);
 				//do_outfile(nds,tenv,env);
 			//nds = nds->next;
 			dup2(cpy,0);
@@ -69,6 +71,7 @@ void multi_proc(t_nodes *nds,t_env *tenv,char **env)
 {
 	int i;
 	int cpy;
+//	int tmp;
 	int pd[2];
 	int pid;
 
@@ -89,8 +92,14 @@ void multi_proc(t_nodes *nds,t_env *tenv,char **env)
 			exit(1);
 		}
 		else
-		 	wait(NULL);		
-			dup2(pd[0],0);
+		 	while(nds != NULL)
+			{
+				wait(NULL);
+				nds = nds -> next;
+			}
+		//exit(0);
+		//	dup2(pd[0],0);
+		//printf("hello\n");	
 		close(pd[1]);
 		
 	}
