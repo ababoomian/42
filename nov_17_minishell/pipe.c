@@ -70,7 +70,7 @@ void single_proc(t_nodes *nds,t_env *tenv,char **env)
 void multi_proc(t_nodes *nds,t_env *tenv,char **env)
 {
 	int i;
-	int cpy;
+	int	cpy;
 //	int tmp;
 	int pd[2];
 	int pid;

@@ -119,6 +119,7 @@ void	heredoc_redirect(char *str)
 	close(fd);
 	fd = open(file,O_RDONLY );
 	dup2(fd, 0);
+	//close(0);
 	close(fd);
 	unlink(file);
 	free(file);
