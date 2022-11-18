@@ -1,18 +1,29 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vrsargsy <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/18 04:17:21 by vrsargsy          #+#    #+#             */
+/*   Updated: 2022/11/18 04:20:03 by vrsargsy         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+#include "minishell.h"
 
-int ft_abs(long i)
+int	ft_abs(long i)
 {
-	if(i < 0)
-		return(i * -1);
-	return(i);
+	if (i < 0)
+		return (i * -1);
+	return (i);
 }
 
-int ft_isdigit(char c)
+int	ft_isdigit(char c)
 {
-	return(c >= '0' && c <= '9');
+	return (c >= '0' && c <= '9');
 }
 
-long ft_atoi(const char *str)
+long	ft_atoi(const char *str)
 {
 	size_t				id;
 	int					negative;
@@ -37,56 +48,58 @@ long ft_atoi(const char *str)
 	return (res * negative);
 }
 
-int mat_len(char **str)
+int	mat_len(char **str)
 {
-	int i;
+	int	i;
+
 	i = -1;
-	while(str[++i] != NULL)
+	while (str[++i] != NULL)
 		;
-	return(i);
+	return (i);
 }
 
-int is_digit(char *str)
+int	is_digit(char *str)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(str[++i])
-		if((str[i] < '0' || str[i] > '9') && (str[i] != '-' || str[i] != '+'))
-			return(0);
-	return(1);
+	while (str[++i])
+		if ((str[i] < '0' || str[i] > '9') && (str[i] != '-' || str[i] != '+'))
+			return (0);
+	return (1);
 }
 
-int ft_exit(char **read_line)
+int	ft_exit(char **read_line)
 {
-	if(!read_line[1])
+	if (!read_line[1])
 		exit(0);
-	if(mat_len(read_line) > 2)
+	if (mat_len(read_line) > 2)
 	{
-		if(is_digit(read_line[1]))
+		if (is_digit(read_line[1]))
 			printf("to many arguments!!\n");
 		else
 		{
 			printf("exit:\nexit code must be numeric!\n");
 			exit(255);
 		}
-			return(1);
+		return (1);
 	}
 	else
 	{
-		if(is_digit(read_line[1]) && (ft_atoi(read_line[1]) >= INT_MAX || ft_atoi(read_line[1]) <= INT_MIN))
+		if (is_digit(read_line[1]) && (ft_atoi(read_line[1]) >= INT_MAX
+				|| ft_atoi(read_line[1]) <= INT_MIN))
 		{
 			printf("exit:\nmust be numeric\n");
 			exit(255);
 		}
-		else if(!is_digit(read_line[1]))
+		else if (!is_digit(read_line[1]))
 		{
 			printf("exit:\nmust be numeric\n");
 			exit(255);
 		}
 		else
 		{
-			if(ft_atoi(read_line[1]) >= 0)
+			if (ft_atoi(read_line[1]) >= 0)
 				exit(ft_atoi(read_line[1]) % 256);
 			else
 				exit(256 - ft_abs(ft_atoi(read_line[1]) % 256));

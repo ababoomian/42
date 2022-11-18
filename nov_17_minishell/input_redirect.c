@@ -1,34 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input_redirect.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/18 03:56:43 by vrsargsy          #+#    #+#             */
+/*   Updated: 2022/11/18 22:20:21 by arbaboom         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./minishell.h"
 
 int	gnl_cnt(int fd)
 {
-	int	rd;
+	int		rd;
 	char	ch;
-	int	len;
+	int		len;
 
 	rd = 0;
 	len = 0;
-	while((rd = read(fd, &ch, 1)) > 0)
+	rd = read(fd, &ch, 1);
+	while (rd > 0)
+	{
+		rd = read(fd, &ch, 1);
 		len++;
-	return len;
+	}
+	return (len);
 }
 
 char	*gnl(int fd)
 {
-	int	rd;
-	int	i;
+	int		rd;
+	int		i;
 	char	*s;
 	char	ch;
-	int	len;
+	int		len;
 
 	rd = 0;
 	i = 0;
 	len = 0;
 	s = malloc(gnl_cnt(fd) + 1);
-	//s = malloc(10000);
-	while((rd = read(fd, &ch, 1)) > 0)
+	rd = read(fd, &ch, 1);
+	while (rd > 0)
+	{
+		rd = read(fd, &ch, 1);
 		s[i++] = ch;
-	if((!s[i - 1] && !rd) || rd == -1)
+	}
+	if ((!s[i - 1] && !rd) || rd == -1)
 	{
 		free(s);
 		return (NULL);
@@ -38,45 +57,46 @@ char	*gnl(int fd)
 	return (s);
 }
 
- void	infile_redirect(char *file,int fd_s)
+void	infile_redirect(char *file, int fd_s)
 {
-	 (void) fd_s;
-	int fd = open(++file,O_WRONLY | O_CREAT | O_TRUNC , 0644);
-	dup2(fd,1);
-	close(fd);	
+	int	fd;
+
+	(void)fd_s;
+	fd = open(++file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	dup2(fd, 1);
+	close(fd);
 }
 
 void	outfile_redirect(char *str)
 {
-	int	fd;
+	int		fd;
 	char	*s;
-	s = NULL;
 
+	s = NULL;
 	fd = open(++str, O_RDONLY);
-	if(fd == -1)
+	if (fd == -1)
 		return ;
-	//if(s)
-		dup2(1, fd);
+	dup2(1, fd);
 	s = gnl(fd);
-	write(1,s,ft_strlen(s));
+	write(1, s, ft_strlen(s));
 	close(fd);
 	free(s);
 }
 
 void	append_redirect(char *file)
 {
-	int fd;
+	int	fd;
 
 	fd = open(++file, O_RDWR | O_APPEND, 0644);
-	if(fd > 0)
+	if (fd > 0)
 	{
-		dup2(fd,1);
+		dup2(fd, 1);
 		write(fd, "\n", 1);
 		close(fd);
 	}
 	else
 	{
-		write(2,"no such a file or directory\n",29);
+		write(2, "no such a file or directory\n", 29);
 		return ;
 	}
 	return ;
@@ -84,18 +104,18 @@ void	append_redirect(char *file)
 
 void	heredoc_redirect(char *str)
 {
-	//int cpy = dup(0);
-	char *s;
-	int fd;
-	int	i;
-	char *file;
+	char	*s;
+	int		fd;
+	int		i;
+	char	*file;
+	int cpy = dup(0);
 
-	file = ft_strjoin(".",str);
+	file = ft_strjoin(".", str);
 	i = 0;
-	str+=2;
-	while(str[i])
+	str += 2;
+	while (str[i])
 	{
-		if(str[i] == '<' || str[i] == '>' || str[i] == '-')
+		if (str[i] == '<' || str[i] == '>' || str[i] == '-')
 		{
 			printf("%s\n", "syntax error near unexpected token `<'");
 			return ;
@@ -103,24 +123,23 @@ void	heredoc_redirect(char *str)
 		i++;
 	}
 	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("heredoc-redirect: %s : %d\n", str,fd);
-
-	while(1)
+	printf("heredoc-redirect: %s : %d\n", str, fd);
+	while (1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);
-		if(strcmp(str, s) == 0)
-			break;
+		if (strcmp(str, s) == 0)
+			break ;
 		write(fd, s, ft_strlen(s));
-		write(fd,"\n",1);
+		write(fd, "\n", 1);
 		free(s);
 		s = NULL;
 	}
-
+	//printf("helloooooo!!!!!!");
 	close(fd);
-	fd = open(file,O_RDONLY );
+	fd = open(file, O_RDONLY);
 	dup2(fd, 0);
-	//close(0);
 	close(fd);
 	unlink(file);
 	free(file);
+	dup2(cpy,0);
 }
