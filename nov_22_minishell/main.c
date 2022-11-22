@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 04:05:26 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/18 11:54:10 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:23:22 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,16 +123,61 @@ char	*acc(char *cmd, t_env *tenv)
 	return (NULL);
 }
 
+void simple_hrd(char *str)
+{
+	char	*s;
+	int		fd;
+	int		i;
+	char	*file;
+
+	file = ft_strjoin(".", str);
+	i = 0;
+	str += 2;
+	while (str[i])
+	{
+		if (str[i] == '<' || str[i] == '>' || str[i] == '-')
+		{
+			printf("%s\n", "syntax error near unexpected token `<'");
+			return ;
+		}
+		i++;
+	}
+	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("heredoc-redirect: %s : %d\n", str, fd);
+	while (1)
+	{
+		s = readline(CYELLOW"heredoc: "GREEN);
+		if (strcmp(str, s) == 0)
+			break ;
+		write(fd, s, ft_strlen(s));
+		write(fd, "\n", 1);
+		free(s);
+		s = NULL;
+	}
+	close(fd);
+	unlink(file);
+	free(file);
+	
+}
+
 void	do_hrd(t_nodes *nds)
 {
 	int	i;
+	int len;
 
+	len = mat_len(nds->heardock);
 	i = -1;
 	if (*nds->heardock)
 	{		
 		while (nds->heardock[++i])
 		{
-			heredoc_redirect(nds->heardock[i]);
+			if(i == len - 1)
+			{
+				printf("main hrddd\n");	
+				heredoc_redirect(nds->heardock[i]);
+			}
+			else
+				simple_hrd(nds->heardock[i]);
 		}
 	}
 }
@@ -245,12 +290,13 @@ int main(int ac, char **av, char **env)
 		cpy = dup(0);
 		pipes = ft_split(line, '|');
 		nds = init_nodes(pipes);
+		print_nodes(nds);
 		/* if(mat_len(pipes) == 1)
 			single_proc(nds,tenv,env);
 		else
 			multi_proc(nds,tenv,env); */
 			//dup2(cpy,0);
-		while(nds!= NULL)
+		/* while(nds!= NULL)
 		{
 			int i = -1;
 			do_hrd(nds);
@@ -262,7 +308,7 @@ int main(int ac, char **av, char **env)
 			nds = nds->next;
 			dup2(cpy,0);
 			//close(cpy);
-		}
+		} */
 	 }
     return (0);
 }

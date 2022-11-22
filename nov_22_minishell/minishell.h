@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrsargsy <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:06:29 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/18 03:14:32 by vrsargsy         ###   ########.fr       */
+/*   Updated: 2022/11/22 14:00:51 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,25 @@
 # define INFILE "<"
 # define HEARDOCK "<<"
 # define APPEND ">>"
+//Regular underline text
+# define UBLK "\e[4;30m"
+# define URED "\e[4;31m"
+# define UGRN "\e[4;32m"
+# define UYEL "\e[4;33m"
+# define UBLU "\e[4;34m"
+# define UMAG "\e[4;35m"
+# define UCYN "\e[4;36m"
+# define UWHT "\e[4;37m"
+
+//Regular background
+# define BLKB "\e[40m"
+# define REDB "\e[41m"
+# define GRNB "\e[42m"
+# define YELB "\e[43m"
+# define BLUB "\e[44m"
+# define MAGB "\e[45m"
+# define CYNB "\e[46m"
+# define WHTB "\e[47m"
 
 typedef struct s_dict
 {
@@ -72,6 +91,7 @@ typedef struct s_nodes
 	int				index;
 	char			**append;
 	char			**heardock;
+	char			**redir;
 	char			**infile;
 	char			**outfile;
 	char			**cmd;

@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:56:43 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/18 22:20:21 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/21 12:47:09 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	heredoc_redirect(char *str)
 	int		fd;
 	int		i;
 	char	*file;
-	int cpy = dup(0);
+	//int cpy = dup(0);
 
 	file = ft_strjoin(".", str);
 	i = 0;
@@ -141,5 +141,5 @@ void	heredoc_redirect(char *str)
 	close(fd);
 	unlink(file);
 	free(file);
-	dup2(cpy,0);
+	//dup2(cpy,0);
 }

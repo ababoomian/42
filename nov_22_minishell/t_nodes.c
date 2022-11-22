@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   t_nodes.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrsargsy <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:49:43 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/18 03:55:56 by vrsargsy         ###   ########.fr       */
+/*   Updated: 2022/11/22 14:00:27 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+# include "./minishell.h"
 
 void	print_nodes(t_nodes *head) {
 
@@ -28,7 +29,14 @@ void	print_nodes(t_nodes *head) {
 			printf(CYELLOW"cmd : %s\n"GREEN, current->cmd[i]);
 		i = -1;
 		while (current->infile[++i])
-			printf(CYELLOW"inn: %s"GREEN, current->infile[i]);
+			printf(CYELLOW"inn: %s\n"GREEN, current->infile[i]);
+		i = -1;
+		while (current->append[++i])
+			printf(CYELLOW"append: %s\n"GREEN, current->append[i]);
+		i = -1;
+		while (current->outfile[++i])
+			printf(CYELLOW"outfile: %s\n"GREEN, current->outfile[i]);
+		printf(RESET"read _line %s \n"GREEN,current->rd_line);
         current = current->next;
     }
 }
@@ -51,7 +59,7 @@ int	hd_count(char *str)
 			while (str[i] != ' ' && str[i])
 			{
 				i++;
-				j++;
+				//j++;
 			}
 		}
 		j++;
