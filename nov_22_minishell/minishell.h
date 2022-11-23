@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:06:29 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/22 14:00:51 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:45:39 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,5 +164,6 @@ void		single_proc(t_nodes *nds, t_env *tenv, char **env);
 void		multi_proc(t_nodes *nds, t_env *tenv, char **env);
 void		do_hrd(t_nodes *nds);
 void		do_infile(t_nodes *nds, t_env *tenv, char **env);
+char		**init_redir(char *str);
 
 #endif

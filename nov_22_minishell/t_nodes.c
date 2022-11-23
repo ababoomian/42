@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:49:43 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/22 14:00:27 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/22 19:17:11 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ void	print_nodes(t_nodes *head) {
 		i = -1;
 		while (current->outfile[++i])
 			printf(CYELLOW"outfile: %s\n"GREEN, current->outfile[i]);
+		i = -1;
+		while (current->redir[++i])
+			printf(UMAG"redir: %s\n"GREEN, current->redir[i]);
 		printf(RESET"read _line %s \n"GREEN,current->rd_line);
         current = current->next;
     }
@@ -57,10 +60,7 @@ int	hd_count(char *str)
 			i += 2;
 			j += 2;
 			while (str[i] != ' ' && str[i])
-			{
 				i++;
-				//j++;
-			}
 		}
 		j++;
 		i++;
@@ -176,6 +176,7 @@ t_nodes	*new_nodes(int i, char **mx)
 	inited->infile = infile_init(mx[i]);
 	inited->outfile = outfile_init(mx[i]);
 	inited->cmd = ft_smart_split(cmd, 32);
+	inited->redir = init_redir(mx[i]);
 	inited->index = i;
 	free(cmd);
 	inited->next = NULL;

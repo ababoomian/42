@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrsargsy <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 04:16:47 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/18 04:17:16 by vrsargsy         ###   ########.fr       */
+/*   Updated: 2022/11/23 12:20:55 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "./minishell.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -39,4 +40,44 @@ char	*ft_strjoin(char *s1, char const *s2)
 		dest[j++] = s2[i++];
 	dest[j] = 0;
 	return (dest);
+}
+
+char	**init_redir(char *str)
+{
+	int		i;
+	int		j;
+	char	*res;
+
+	j = 0;
+	i = 0;
+	res = malloc(10000);
+
+
+	while(str[i])
+	{
+		if (str[i] == '<' || str[i] == '>')
+		{
+			
+			if (str[i + 1] != '<')
+			{
+				if( str[i + 1] && str[i +  1] == ' ')
+				{
+					i++;	
+					while (str[i] && str[i] == ' ')
+						i++;
+				}
+				j = i;
+				while(str[i] &&( str[i] != '<' || str[i] != '>'))
+					i++;
+				res = ft_strjoin(res,ft_substr(str,j,i - j));
+				res = ft_strjoin(res, " ");
+			}
+			else
+			{
+				i++;
+			}
+		}
+		i++;
+	}
+	return(ft_split(res,32));
 }
