@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:44:16 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/22 13:56:31 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:13:03 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	**heardock_init(char *str)
 	char	*res;
 
 	res = malloc(sizeof(char) * hd_count(str) + 1);
-	printf(UCYN"\n hd :%d\n"RESET,hd_count(str));
+	//printf(UCYN"\n hd :%d\n"RESET,hd_count(str));
 	i = 0;
 	j = 0;
 	if (!str)
@@ -55,7 +55,7 @@ char	**append_init(char *str)
 	char	*res;
 
 	res = malloc(sizeof(char) * append_cnt(str) + 1);
-	printf(UCYN"\n append : %d\n"RESET,append_cnt(str));
+	//printf(UCYN"\n append : %d\n"RESET,append_cnt(str));
 	i = 0;
 	j = 0;
 	if (!str)
@@ -91,7 +91,7 @@ char	**infile_init(char *str)
 	char	*res;
 
 	res = malloc(sizeof(char) * infile_cnt(str) + 1);
-	printf(UCYN"\n infile : %d\n"RESET,infile_cnt(str));
+	//printf(UCYN"\n infile : %d\n"RESET,infile_cnt(str));
 	i = 0;
 	j = 0;
 	if (!str)
@@ -127,7 +127,7 @@ char	**outfile_init(char *str)
 	char	*res;
 
 	res = malloc(sizeof(char) * outfile_cnt(str) + 1);
-	printf(UCYN"\n outfile : %d\n"RESET,outfile_cnt(str));
+	//printf(UCYN"\n outfile : %d\n"RESET,outfile_cnt(str));
 	i = 0;
 	j = 0;
 	if (!str)

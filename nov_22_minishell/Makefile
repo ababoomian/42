@@ -25,7 +25,7 @@ $(TEST): $(OBJS_TEST)
 	
 
 fclean :
-	$(RM) $(NAME) $(OBJS) obj ~/Library/Caches
+	$(RM) $(NAME) $(OBJS) obj ~/Library/Caches/*
 
 re : fclean all
 

@@ -6,7 +6,7 @@
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 04:16:47 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/23 12:20:55 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:07:39 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,11 @@ char	**init_redir(char *str)
 	int		i;
 	int		j;
 	char	*res;
+	//char **test;
 
 	j = 0;
 	i = 0;
-	res = malloc(10000);
+	res = "";
 
 
 	while(str[i])
@@ -60,12 +61,6 @@ char	**init_redir(char *str)
 			
 			if (str[i + 1] != '<')
 			{
-				if( str[i + 1] && str[i +  1] == ' ')
-				{
-					i++;	
-					while (str[i] && str[i] == ' ')
-						i++;
-				}
 				j = i;
 				while(str[i] &&( str[i] != '<' || str[i] != '>'))
 					i++;
@@ -79,5 +74,6 @@ char	**init_redir(char *str)
 		}
 		i++;
 	}
+	//printf("resssss :%s\n",res);
 	return(ft_split(res,32));
 }
