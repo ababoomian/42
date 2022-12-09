@@ -19,7 +19,7 @@ all:$(NAME)
 
 $(NAME):$(OBJS)
 	$(CC) ${FLAGS} -o ${NAME} ${OBJS} $(LINKERS)
-	mkdir obj && mv *.o obj
+	 mkdir obj && mv *.o obj
 
 $(TEST): $(OBJS_TEST)
 	$(CC) $(FLAGS) -o $(TEST) $(OBJS_TEST) $(LINKERS)
