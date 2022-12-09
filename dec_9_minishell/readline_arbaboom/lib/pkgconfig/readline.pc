@@ -1,4 +1,4 @@
-prefix=/Users/arbaboom/Desktop/42/nov_22_minishell/readline_arbaboom
+prefix=/Users/arbaboom/Desktop/42/dec_9_minishell/readline_arbaboom
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

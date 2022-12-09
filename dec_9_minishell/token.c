@@ -48,7 +48,7 @@ char **hd_init(char *str)
 				} */
 				while(str[i] && (str[i] != ' ' || str[i] != '<' || str[i] != '>'))
 				{
-					printf("hello\n");
+					//printf("hello\n");
 					end++;
 					i++;
 				}

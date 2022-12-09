@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input_redirect.c                                   :+:      :+:    :+:   */
+/*   redirec_in.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arbaboom <arbaboom@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 03:56:43 by vrsargsy          #+#    #+#             */
-/*   Updated: 2022/11/30 20:20:57 by arbaboom         ###   ########.fr       */
+/*   Updated: 2022/12/09 04:29:14 by arbaboom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	heredoc_redirect(char *str)
 	char	*file;
 	//int cpy = dup(0);
 
-	file = ft_strjoin(".", str);
+	file = ft_strjoin(".\7", str);
 	i = 0;
 	str += 2;
 	while (str[i])
@@ -123,10 +123,11 @@ void	heredoc_redirect(char *str)
 		i++;
 	}
 	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("heredoc-redirect: %s : %d\n", str, fd);
 	while (1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);
+		if(!	s)
+			exit(0);
 		if (strcmp(str, s) == 0)
 			break ;
 		write(fd, s, ft_strlen(s));
@@ -134,7 +135,6 @@ void	heredoc_redirect(char *str)
 		free(s);
 		s = NULL;
 	}
-	//printf("helloooooo!!!!!!");
 	close(fd);
 	fd = open(file, O_RDONLY);
 	dup2(fd, 0);

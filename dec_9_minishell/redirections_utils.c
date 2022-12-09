@@ -57,7 +57,7 @@ void	do_hrd(t_nodes *nds)
 		{
 			if(i == len - 1)
 			{
-				printf("main hrddd\n");	
+				
 				heredoc_redirect(nds->heardock[i]);
 			}
 			else
@@ -86,7 +86,6 @@ void simple_hrd(char *str)
 		i++;
 	}
 	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("heredoc-redirect: %s : %d\n", str, fd);
 	while (1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);

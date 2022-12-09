@@ -89,7 +89,7 @@ execution(t_nodes *nds, char **env, t_env *tenv)
 		if (pid ==0)
 		{
 			//signal(SIGINT, handler);
-			printf("%s\ncmd : %s\n",nds->cmd[0],cmd);
+			//printf("%s\ncmd : %s\n",nds->cmd[0],cmd);
 			signal(SIGINT,&ctrl_c);
 			if (nds->cmd[0])
 				if (!if_built_in(nds->cmd[0]))
@@ -103,7 +103,7 @@ execution(t_nodes *nds, char **env, t_env *tenv)
 		}
 		else
 			wait(NULL);
-		printf(UMAG"leak add: %p\n"GREEN,&nds->cmd);
+		//printf(UMAG"leak add: %p\n"GREEN,&nds->cmd);
 		free(cmd);
 	}
 /* 	int i = -1;

@@ -171,7 +171,7 @@ t_nodes	*new_nodes(int i, char **mx)
 	inited = (t_nodes *)malloc(sizeof(t_nodes));
 	if (inited == NULL)
 		return (NULL);
-	printf(UBLU"here count : %d\n"GREEN,heredoc_count(mx[i]));
+	//printf(UBLU"here count : %d\n"GREEN,heredoc_count(mx[i]));
 	inited->heardock =heardock_init(mx[i]);
 	inited->append = append_init(mx[i]);
 	inited->infile = infile_init(mx[i]);

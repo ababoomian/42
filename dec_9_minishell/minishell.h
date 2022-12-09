@@ -129,10 +129,6 @@ void		print_nodes(t_nodes *head);
 char		*parsed_str_lst(char *str);
 t_nodes		*new_nodes( int i, char **mx);
 t_nodes		*init_nodes(char **mx);
-int			is_heardock(char a, char b, char c);
-int			is_append(char a, char b, char c);
-int			is_infile(char a, char b);
-int			is_outfile(char a, char b);
 int			metacheck(char a, char b, char c);
 int			hd_count(char *str);
 void		print_list_tenv(t_env *head);
@@ -172,6 +168,19 @@ void 		simple_hrd(char *str);
 int			heredoc_count(char *str);
 char 		**hd_init(char *str);
 void 		ctrl_c(int sig);
+char		*ft_strdup(const char *s1);
+void		*ft_memcpy(void *dst, const void *src, size_t n);
+int			is_infile(char *s);
+int			is_outfile(char *s);
+int			is_heredoc(char *s);
+int			is_append(char *s);
+int			is_num(char c);
+int			is_alpha(char c);
+int			is_space(char c);
+int			is_meta(char c);
+int			is_al_num_meta_space(char c);
+int			is_printable(char c);
+
 
 
 
