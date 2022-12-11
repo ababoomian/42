@@ -137,47 +137,7 @@ void update_shlvl(t_env *tenv)
 	return ;
 }
 
-void do_doub(t_nodes *nds,t_env *tenv,int *input,int *output,char **env)
-{
-	int proc;
 
-	proc = fork();
-	if (proc == 0)
-	{
-		if (input != NULL)
-		{
-			close(input[1]);
-			dup2(input[0],STDIN_FILENO);
-		}
-		if (output != NULL)
-		{
-			close(output[0]);
-			dup2(output[1],1);
-		}
-		do_infile(nds,tenv,env);
-		
-	}
-	
-}
-
-void double_proc(t_nodes *nds,t_env *tenv,char **env)
-{
-	int fd_f[2];
-	int fd_s[2];
-
-	pipe(fd_f);
-	pipe(fd_s);
-	do_doub(nds,tenv,NULL,fd_f,env);
-	while (nds != NULL)
-	{
-		if(nds->index % 2 == 0)
-			do_doub(nds,tenv,fd_f,fd_s,env);
-		else
-			do_doub(nds,tenv,fd_s,fd_f,env);	
-		nds = nds->next;
-	}
-	
-}
 void ctrl_c(int sig)
 {
 	(void)sig;
@@ -195,6 +155,75 @@ void ctrl_d(int sig)
 	/* printf("bye\n");
 	exit(0); */
 }
+void multi(t_nodes *nds,t_env *tenv,char **env,int size)
+{
+	int fd[size][2];
+	int i;
+	int pid;
+
+	i = -1;
+	//*fd = malloc(sizeof(int *) * size);
+	while(++i < size)
+		pipe(fd[i]);
+	while (nds != NULL)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			if(nds->index == 0)
+				dup2(fd[0][1],1);
+			else if(nds->index == size)
+				dup2(fd[nds->index - 1][0],0);
+			else
+			{
+				dup2(fd[nds->index][0],0);
+				dup2(fd[nds->index][1],1);
+			}
+			close(fd[nds->index][0]);
+			close(fd[nds->index][1]);
+			do_infile(nds,tenv,env);
+		}
+		
+		nds = nds->next;
+	}
+	i = -1;
+	while(++i < size)
+	{
+		close(fd[i][0]);
+		close(fd[i][1]);
+	}
+	while(wait(0) != -1);
+}
+
+void double_proc(t_nodes *nds,t_env *tenv,char **env)
+{
+	int fd_f[2];
+	int pid;
+	pipe(fd_f);
+	while (nds != NULL)
+	{
+		pid = fork();
+		if(pid == 0)
+		{
+			if(nds->index == 0)
+				dup2(fd_f[1],1);
+			else
+				dup2(fd_f[0],0);
+			close(fd_f[0]);
+			close(fd_f[1]);
+			do_infile(nds,tenv,env);
+			exit(1);
+		}
+		nds = nds->next;
+	}
+
+	close(fd_f[0]);
+	close(fd_f[1]);
+
+	while (wait(0) != -1);
+}
+
+
 int main(int ac, char **av, char **env)
 {
 	int			cpy;
@@ -230,7 +259,7 @@ int main(int ac, char **av, char **env)
 		pipes = ft_split(line, '|');
 		nds = init_nodes(pipes);			
 
-		//print_nodes(nds);
+		print_nodes(nds);
 		/* if(mat_len(pipes) == 1)
 			single_proc(nds,tenv,env);
 		else
@@ -243,7 +272,12 @@ int main(int ac, char **av, char **env)
 		while (test[++i])
 			printf(UMAG" test 1 :%s\n",test[i]); */
 		
-		while(nds!= NULL)
+		if(mat_len(pipes) == 2)
+			double_proc(nds,tenv,env);
+		else if(mat_len(pipes) > 2)
+			multi(nds,tenv,env,mat_len(pipes - 1));
+		else
+			while(nds!= NULL)
 		{
 			int i = -1;
 			do_hrd(nds);

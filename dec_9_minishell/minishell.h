@@ -180,9 +180,11 @@ int			is_space(char c);
 int			is_meta(char c);
 int			is_al_num_meta_space(char c);
 int			is_printable(char c);
-
-
-
-
+char		*removeSpacesFromStr(char *string);
+int			heardock_count(char *str);
+int			append_count(char *str);
+int			infile_count(char *str);
+int			outfile_count(char *str);
+int			redir_count(char *str);
 
 #endif

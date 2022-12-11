@@ -57,12 +57,20 @@ char	**heardock_init(char *str)
 			while(is_printable(s[i]) && !is_space(s[i]) && !is_meta(s[i]))
 				i++;
 			i--;
+			printf("i %c\n", s[i]);
+			if(is_meta(s[i]))
+			{
+				free(s);
+				return NULL;
+			}
 			strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 			strcat(res, " ");
 		}
 		i++;
 	}
 	free(s);
+	printf("strlen res %zu\n", ft_strlen(res));
+	printf("strlen hdcnt %d\n", heardock_count(res));
 	return ft_split(res, ' ');
 }
 
@@ -106,6 +114,13 @@ char	**append_init(char *str)
 			while(is_printable(s[i]) && !is_space(s[i]) && !is_meta(s[i]))
 				i++;
 			i--;
+			if(is_meta(s[i]) || s[i] == '.')
+			{
+				if(s[i] == '.')
+					perror(".: Is a directory\n");
+				free(s);
+				return (NULL);
+			}
 			strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 			strcat(res, " ");
 		}
@@ -142,6 +157,11 @@ char	**infile_init(char *str)
 				while(is_printable(s[i]) && !is_space(s[i]) && !is_meta(s[i]))
 					i++;
 				i--;
+				if(is_meta(s[i]) || s[i] == '.')
+				{
+					free(s);
+					return (NULL);
+				}
 				strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 				strcat(res, " ");
 			}
@@ -179,6 +199,11 @@ char	**outfile_init(char *str)
 				while(is_printable(s[i]) && !is_space(s[i]) && !is_meta(s[i]))
 					i++;
 				i--;
+				if(is_meta(s[i]) || s[i] == '.')
+				{
+					free(s);
+					return (NULL);
+				}
 				strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 				strcat(res, " ");
 			}
