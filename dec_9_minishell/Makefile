@@ -1,4 +1,4 @@
-FLAGS= -Wall -Wextra -Werror -I./readline_arbaboom/include
+CFLAGS= -Wall -Wextra -Werror -I./readline_arbaboom/include #-fsanitize=address -g
 CC= cc
 NAME= minishell
 TEST= test
@@ -12,17 +12,15 @@ OBJS_TEST += $(SRCS_MAIN:.c=.o)
 LINKERS= -L./readline_arbaboom/lib -lreadline
 RD= $(shell find ${HOME} -name readline_arbaboom 2>/dev/null)
 FORCE = $(SRCS) Makefile $(wildcard *.h)
-%.o: %.c
-	$(CC) $(FLAGS) -c $< -o $@
 
 all:$(NAME)
 
 $(NAME):$(OBJS)
-	$(CC) ${FLAGS} -o ${NAME} ${OBJS} $(LINKERS)
-	 mkdir obj && mv *.o obj
+	$(CC) ${CFLAGS} -o ${NAME} ${OBJS} $(LINKERS)
+	 mkdir -p obj && mv *.o obj
 
 $(TEST): $(OBJS_TEST)
-	$(CC) $(FLAGS) -o $(TEST) $(OBJS_TEST) $(LINKERS)
+	$(CC) $(CFLAGS) -o $(TEST) $(OBJS_TEST) $(LINKERS)
 
 install:
 	cd readline-master && make clean && ./configure --prefix=$(RD) && make && make install

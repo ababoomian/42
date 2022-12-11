@@ -141,6 +141,8 @@ void update_shlvl(t_env *tenv)
 void ctrl_c(int sig)
 {
 	(void)sig;
+	//write(1,"\n",1);
+	//rl_done = 1;
 	write(1,"\n",1);
 	//rl_clear_visible_line();
 	rl_replace_line("",0);
@@ -157,9 +159,13 @@ void ctrl_d(int sig)
 }
 void multi(t_nodes *nds,t_env *tenv,char **env,int size)
 {
-	int fd[size][2];
+	int (*fd)[2];
 	int i;
 	int pid;
+
+	fd = malloc(sizeof(*fd) * size);
+
+	printf("%d\n", size);
 
 	i = -1;
 	//*fd = malloc(sizeof(int *) * size);
@@ -176,12 +182,16 @@ void multi(t_nodes *nds,t_env *tenv,char **env,int size)
 				dup2(fd[nds->index - 1][0],0);
 			else
 			{
-				dup2(fd[nds->index][0],0);
+				dup2(fd[nds->index - 1][0],0);
 				dup2(fd[nds->index][1],1);
 			}
-			close(fd[nds->index][0]);
-			close(fd[nds->index][1]);
+			for (int i = 0; i < size; i++)
+			{
+				close(fd[i][0]);
+				close(fd[i][1]);
+			}
 			do_infile(nds,tenv,env);
+			exit(1);
 		}
 		
 		nds = nds->next;
@@ -237,7 +247,7 @@ int main(int ac, char **av, char **env)
 	tenv = init_env_tenv(env);
 	update_shlvl(tenv);
 	printf(GREEN"wellcome to minishell : %s\n","hello");
-	//signal(SIGINT,&ctrl_c);
+	signal(SIGINT,&ctrl_c);
 	//signal(SIGQUIT,&ctrl_d);
 	//signal(SIG)
 	while(1)
@@ -259,7 +269,7 @@ int main(int ac, char **av, char **env)
 		pipes = ft_split(line, '|');
 		nds = init_nodes(pipes);			
 
-		print_nodes(nds);
+		//print_nodes(nds);
 		/* if(mat_len(pipes) == 1)
 			single_proc(nds,tenv,env);
 		else
@@ -271,11 +281,11 @@ int main(int ac, char **av, char **env)
 		int i = -1;
 		while (test[++i])
 			printf(UMAG" test 1 :%s\n",test[i]); */
-		
+		// printf("%")
 		if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)
-			multi(nds,tenv,env,mat_len(pipes - 1));
+			multi(nds,tenv,env,mat_len(pipes) - 1);
 		else
 			while(nds!= NULL)
 		{

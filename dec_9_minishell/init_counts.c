@@ -146,10 +146,10 @@ int	redir_count(char *str)
 	int	length;
 
 	length = 0;
+	s = strdup(str);
 	res = malloc(ft_strlen(s)+1);
 	start = 0;
 	i = 0;
-	s = strdup(str);
 	while(s[i])
 	{
 		if(s[i] == '>')

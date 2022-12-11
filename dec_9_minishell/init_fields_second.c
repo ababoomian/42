@@ -41,7 +41,7 @@ char	**heardock_init(char *str)
 	char	*s;
 	char	*res;
 
-	res = malloc(heardock_count(str));
+	res = malloc(1000);
 	//res = malloc(1000);
 	start = 0;
 	i = 0;
@@ -57,7 +57,7 @@ char	**heardock_init(char *str)
 			while(is_printable(s[i]) && !is_space(s[i]) && !is_meta(s[i]))
 				i++;
 			i--;
-			printf("i %c\n", s[i]);
+			//printf("i %c\n", s[i]);
 			if(is_meta(s[i]))
 			{
 				free(s);
@@ -69,8 +69,8 @@ char	**heardock_init(char *str)
 		i++;
 	}
 	free(s);
-	printf("strlen res %zu\n", ft_strlen(res));
-	printf("strlen hdcnt %d\n", heardock_count(res));
+	//printf("strlen res %zu\n", ft_strlen(res));
+	//printf("strlen hdcnt %d\n", heardock_count(res));
 	return ft_split(res, ' ');
 }
 
@@ -97,8 +97,8 @@ char	**append_init(char *str)
 	char	*s;
 	char	*res;
 
-	res = malloc(append_count(str));
-	//res = malloc(1000);
+	//res = malloc(append_count(str));
+	res = malloc(1000);
 	start = 0;
 	i = 0;
 	s = strdup(str);
@@ -137,8 +137,8 @@ char	**infile_init(char *str)
 	char	*s;
 	char	*res;
 
-	res = malloc(infile_count(str));
-	// res = malloc(1000);
+	//res = malloc(infile_count(str));
+	 res = malloc(1000);
 	start = 0;
 	i = 0;
 	s = strdup(str);
@@ -179,8 +179,8 @@ char	**outfile_init(char *str)
 	char	*s;
 	char	*res;
 
-	res = malloc(outfile_count(str));
-	// res = malloc(1000);
+	//res = malloc(outfile_count(str));
+	 res = malloc(1000);
 	start = 0;
 	i = 0;
 	s = strdup(str);
