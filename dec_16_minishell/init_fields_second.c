@@ -14,6 +14,7 @@ char *removeSpacesFromStr(char *string)
 	}
 	else
 		i = 1;
+	//i++;
 	while(is_al_num_meta_space(string[i]))
 	{
         if (string[i] != ' ')
@@ -41,8 +42,9 @@ char	**heardock_init(char *str)
 	char	*s;
 	char	*res;
 
-	res = malloc(1000);
 	//res = malloc(1000);
+	//res = malloc(1000);
+	res = "";
 	start = 0;
 	i = 0;
 	s = strdup(str);
@@ -63,8 +65,11 @@ char	**heardock_init(char *str)
 				free(s);
 				return NULL;
 			}
-			strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
-			strcat(res, " ");
+			res = ft_strjoin(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
+			printf(UMAG" gandon%s\n"GREEN,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
+			res = ft_strjoin(res, " ");
+			//strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
+			//strcat(res, " ");
 		}
 		i++;
 	}

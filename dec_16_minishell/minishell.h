@@ -32,6 +32,7 @@
 # define INFILE "<"
 # define HEARDOCK "<<"
 # define APPEND ">>"
+# define CMD 0
 //Regular underline text
 # define UBLK "\e[4;30m"
 # define URED "\e[4;31m"
@@ -84,8 +85,19 @@ typedef struct s_main
 	t_table	*table;
 }			t_main;
 
+typedef struct s_tok
+{
+	int type;
+	int syntax_err;
+	int delim;
+	char *data;
+	struct s_tok *next;
+
+}t_tok;
+
 typedef struct s_nodes
 {
+	int				pid;
 	int				input;
 	int				output;
 	int				index;

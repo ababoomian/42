@@ -85,6 +85,7 @@ execution(t_nodes *nds, char **env, t_env *tenv)
 		cmd = acc(nds->cmd[0], tenv);
 	if (cmd != NULL)
 	{
+		signal(SIGINT,SIG_IGN);
 		pid = fork();
 		if (pid ==0)
 		{
@@ -174,6 +175,7 @@ void multi(t_nodes *nds,t_env *tenv,char **env,int size)
 	while (nds != NULL)
 	{
 		pid = fork();
+		nds ->pid = pid;
 		if (pid == 0)
 		{
 			if(nds->index == 0)
@@ -243,13 +245,14 @@ int main(int ac, char **av, char **env)
 	char		**pipes;
     (void)av;
 	(void)ac;
-
+	
 	tenv = init_env_tenv(env);
 	update_shlvl(tenv);
 	printf(GREEN"wellcome to minishell : %s\n","hello");
 	signal(SIGINT,&ctrl_c);
 	//signal(SIGQUIT,&ctrl_d);
 	//signal(SIG)
+	rl_catch_signals = 0;
 	while(1)
 	 {	
 		line = readline("😎minishell->");
@@ -270,18 +273,6 @@ int main(int ac, char **av, char **env)
 		nds = init_nodes(pipes);			
 
 		//print_nodes(nds);
-		/* if(mat_len(pipes) == 1)
-			single_proc(nds,tenv,env);
-		else
-			multi_proc(nds,tenv,env); */
-			//dup2(cpy,0);
-		/* char **test = list_to_env(tenv);
-		if(test[0])
-			printf("hello\n");
-		int i = -1;
-		while (test[++i])
-			printf(UMAG" test 1 :%s\n",test[i]); */
-		// printf("%")
 		if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)

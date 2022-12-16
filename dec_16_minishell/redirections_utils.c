@@ -89,6 +89,8 @@ void simple_hrd(char *str)
 	while (1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);
+		if(!s)
+			return ;
 		if (strcmp(str, s) == 0)
 			break ;
 		write(fd, s, ft_strlen(s));

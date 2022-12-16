@@ -58,7 +58,7 @@ int	is_meta(char c)
 
 int	is_al_num_meta_space(char c)
 {
-	if(is_meta(c) || is_alpha(c) || is_num(c) || is_space(c))
+	if(is_meta(c) || is_alpha(c) || is_num(c) || is_space(c) || c == '\'' || c == '\"')
 		return (1);
 	return (0);
 }

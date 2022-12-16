@@ -138,6 +138,7 @@ char	*get_cleaned_str_meta(char *str)
 	i = 0;
 	while (str[i])
 	{
+		
 		if (str[i] == '<' || str[i] == '>')
 			i++;
 		j++;
@@ -161,22 +162,56 @@ char	*get_cleaned_str_meta(char *str)
 	return (res);
 }
 
+char **cmd_init(char *str)
+{
+	char **cpy;
+	char **res;
+	char *test;
+	int i;
+	int del;
+
+	i = -1;
+	del = 0;
+	test = "";
+	res = NULL;
+	cpy= ft_smart_split(str,' ');
+	res = malloc(sizeof(char *) * mat_len(cpy) + 1);
+	
+	while(cpy[++i])
+	{
+		if(cpy[i][0] == '\'' || cpy[i][0] == '\"')
+		{
+			res[i] = ft_strdup(cpy[i]);
+			//res[i] = ft_strjoin(cpy[i]," ");
+		}
+		else
+			res[i] = ft_strjoin("",cpy[i]);
+		//res[i] = ft_strjoin(res[i]," ");
+	}
+	i = -1;
+	while(res[++i])
+		test = ft_strjoin(test,res[i]);
+	return(res);
+
+
+}
+
 t_nodes	*new_nodes(int i, char **mx)
 {
 	t_nodes		*inited;
 	char		*cmd;
 
 	cmd = get_cleaned_str_meta(mx[i]);
+	//cmd = "";
 	inited = NULL;
 	inited = (t_nodes *)malloc(sizeof(t_nodes));
 	if (inited == NULL)
 		return (NULL);
-	//printf(UBLU"here count : %d\n"GREEN,heredoc_count(mx[i]));
 	inited->heardock =heardock_init(mx[i]);
 	inited->append = append_init(mx[i]);
 	inited->infile = infile_init(mx[i]);
 	inited->outfile = outfile_init(mx[i]);
-	inited->cmd = ft_smart_split(cmd, 32);
+	inited->cmd = cmd_init(mx[i]);
 	inited->redir = init_redir(mx[i]);
 	inited->index = i;
 	free(cmd);
