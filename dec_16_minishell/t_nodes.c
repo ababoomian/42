@@ -138,7 +138,6 @@ char	*get_cleaned_str_meta(char *str)
 	i = 0;
 	while (str[i])
 	{
-		
 		if (str[i] == '<' || str[i] == '>')
 			i++;
 		j++;
@@ -149,9 +148,21 @@ char	*get_cleaned_str_meta(char *str)
 	j = 0;
 	while (str[i])
 	{
-		if (str[i] == '<' || str[i] == '>')
+		if(str[i] == '\'')
 		{
-			while (str[i] != ' ' && str[i])
+			while(str[i] && str[i] != '\'')
+				i++;
+			i++;
+		}
+		if(str[i] == '\"')
+		{
+			while(str[i] && str[i] != '\"')
+				i++;
+			i++;
+		}
+		if (str[i] && (str[i] == '<' || str[i] == '>'))
+		{
+			while (str[i] && str[i] != ' ' && !is_meta(str[i]))
 				i++;
 		}
 		res[j] = str[i];
@@ -196,25 +207,86 @@ char **cmd_init(char *str)
 
 }
 
+char *lexer(t_nodes *nds,char *str)
+{
+	int i;
+	int j;
+	char **sp;
+	char *res;
+
+	res = "";
+	(void)nds;
+	sp = ft_smart_split(str, ' ');
+	i = -1;
+	j = 0;
+	while (sp[++i])
+	{
+		if(sp[i][0] == '\'' || sp[i][0] == '\"')
+		{
+			res = ft_strjoin(res,sp[i]);
+			res = ft_strjoin(res," ");
+		}
+		else if(strcmp(sp[i],">>") == 0 || strcmp(sp[i],"<<") == 0 || strcmp(sp[i],">") == 0 || strcmp(sp[i],"<") == 0 )
+		{
+			res = ft_strjoin(res,sp[i]);\
+			if(sp[i + 1])
+				res = ft_strjoin(res,sp[i + 1]);
+			res = ft_strjoin(res," ");
+			i++;
+		}
+		else
+		{
+			if(sp[i])
+			{
+				res = ft_strjoin(res,sp[i]);
+				res = ft_strjoin(res," ");
+			}
+		}
+	}
+	
+	return(res);
+	
+}
+char **parse_cmd(char **str)
+{
+	int i;
+	char *res;
+
+	i = -1;
+	res = "";
+	while (str[++i])
+	{
+		if(str[i] && ((str[i][0] == '\'' || str[i][0] == '\"') || (str[i][0] != '<' && str[i][0] != '>')))
+		{
+			res = ft_strjoin(res,str[i]);
+			res = ft_strjoin(res," ");
+		}
+	}
+	return(ft_smart_split(res,' '));
+}
+
 t_nodes	*new_nodes(int i, char **mx)
 {
 	t_nodes		*inited;
 	char		*cmd;
+	char		*test;
 
 	cmd = get_cleaned_str_meta(mx[i]);
 	//cmd = "";
 	inited = NULL;
 	inited = (t_nodes *)malloc(sizeof(t_nodes));
+	//printf(UBLU"%s\n"GREEN,lexer(inited,mx[i]));
+	test = lexer(inited,mx[i]);
 	if (inited == NULL)
 		return (NULL);
-	inited->heardock =heardock_init(mx[i]);
-	inited->append = append_init(mx[i]);
-	inited->infile = infile_init(mx[i]);
-	inited->outfile = outfile_init(mx[i]);
-	inited->cmd = cmd_init(mx[i]);
-	inited->redir = init_redir(mx[i]);
+	inited->heardock =heardock_init(test);
+	inited->append = append_init(test);
+	inited->infile = infile_init(test);
+	inited->outfile = outfile_init(test);
+	inited->cmd = parse_cmd(ft_smart_split(test,32));
+	inited->redir = init_redir(test);
 	inited->index = i;
-	free(cmd);
+	//free(cmd);
 	inited->next = NULL;
 	return (inited);
 }

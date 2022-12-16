@@ -235,6 +235,21 @@ void double_proc(t_nodes *nds,t_env *tenv,char **env)
 	while (wait(0) != -1);
 }
 
+int err_index(char *str)
+{
+	int i;
+
+	i = -1;
+	/* if(check_double_quotes(str) || check_single_quotes(str))
+		return(i); */
+	while (str[++i])
+	{
+		
+		
+	}
+	return(-1);
+}
+
 
 int main(int ac, char **av, char **env)
 {
@@ -269,11 +284,11 @@ int main(int ac, char **av, char **env)
 			continue ;
 		}
 		cpy = dup(0);
-		pipes = ft_split(line, '|');
+		pipes = ft_smart_split(line, '|');
 		nds = init_nodes(pipes);			
 
-		//print_nodes(nds);
-		if(mat_len(pipes) == 2)
+		print_nodes(nds);
+	/* 	if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)
 			multi(nds,tenv,env,mat_len(pipes) - 1);
@@ -290,7 +305,7 @@ int main(int ac, char **av, char **env)
 			nds = nds->next;
 			dup2(cpy,0);
 			close(cpy);
-		}
+		} */
 	 }
     return (0);
 }

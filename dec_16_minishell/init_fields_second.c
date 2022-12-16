@@ -50,6 +50,12 @@ char	**heardock_init(char *str)
 	s = strdup(str);
 	while(s[i])
 	{
+		if(s[i] == '\'')
+			while(s[i++] && s[i] != '\'')
+				i++;
+		if(s[i] == '\"')
+			while(s[i++] && s[i] != '\"')
+				i++;
 		if(is_heredoc(s+i))
 		{		
 			start = i;

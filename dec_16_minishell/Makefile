@@ -23,7 +23,7 @@ $(TEST): $(OBJS_TEST)
 	$(CC) $(CFLAGS) -o $(TEST) $(OBJS_TEST) $(LINKERS)
 
 install:
-	cd readline-master && make clean && ./configure --prefix=$(RD) && make && make install
+	cd readline-master && ./configure --prefix=$(RD) && make && make install
 
 fclean :
 	$(RM) $(NAME) $(OBJS) obj ~/Library/Caches/*

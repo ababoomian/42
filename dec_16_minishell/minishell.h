@@ -108,6 +108,7 @@ typedef struct s_nodes
 	char			**outfile;
 	char			**cmd;
 	char			*rd_line;
+	char			*syntax_err;
 	struct s_nodes	*next;
 }					t_nodes;
 
@@ -198,5 +199,7 @@ int			append_count(char *str);
 int			infile_count(char *str);
 int			outfile_count(char *str);
 int			redir_count(char *str);
+int	check_single_quotes(char *str);
+int	check_double_quotes(char *str);
 
 #endif
