@@ -26,7 +26,7 @@ install:
 	cd readline-master && ./configure --prefix=$(RD) && make && make install
 
 fclean :
-	$(RM) $(NAME) $(OBJS) obj ~/Library/Caches/*
+	$(RM) $(NAME) $(OBJS) obj 
 
 re : fclean all
 

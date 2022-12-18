@@ -250,12 +250,29 @@ int err_index(char *str)
 	return(-1);
 }
 
+void print_tok(t_token *tok)
+{
+	while (tok != NULL)
+	{
+		//if(tok->index)
+			printf(UBLU"      index : %d"GREEN,tok->index);
+		//if(tok->type)
+			printf(UBLU"      type : %d"GREEN,tok->type);
+		if(tok->token)
+			printf(UBLU"      token : %s\n"GREEN,tok->token);
+		tok = tok->next;
+	}
+	
+
+}
+
 
 int main(int ac, char **av, char **env)
 {
 	int			cpy;
 	t_env		*tenv;
 	t_nodes		*nds;
+	t_token		*tok;
 	char		*line;
 	char		**pipes;
     (void)av;
@@ -285,10 +302,12 @@ int main(int ac, char **av, char **env)
 		}
 		cpy = dup(0);
 		pipes = ft_smart_split(line, '|');
-		nds = init_nodes(pipes);			
+		nds = init_nodes(pipes);
+		set_token(&line,&tok);
 
-		print_nodes(nds);
-	/* 	if(mat_len(pipes) == 2)
+		//print_tok(tok);
+		//print_nodes(nds);
+/* 		if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)
 			multi(nds,tenv,env,mat_len(pipes) - 1);

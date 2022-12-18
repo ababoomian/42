@@ -53,6 +53,44 @@
 # define CYNB "\e[46m"
 # define WHTB "\e[47m"
 
+typedef enum s_types
+{
+	_EXTERNAL = 0, // text
+	_SPACE = 1, // space
+	_RED_IN = 2, // < redirection input
+	_RED_OUT = 3, // > redirection output
+	_PIPE = 4, // | pipe
+	_EXPRESSION = 5, // $ expression
+	_SINGLE_QUOTE = 6, // ' quote
+	_DUBLE_QUOTE = 7, // " double qoute
+	_HEREDOC = 8, // << heredoc
+	_APPEND = 9, // >> append
+	_UNDEFINED = 10, // ; ` doesn't handle
+	_CMD = 11, // comands
+	_EXPANSION_SINGLE = 12, // [ '...' ]
+	_EXPANSION_DUBLE = 13, // [ "..." ]
+	_DELIMITER = 14, // redirection filename
+}			t_types;
+
+
+typedef	struct s_token
+{
+	int					index;
+	int					type;
+	char				*token;
+	struct s_token	*next;
+	struct s_token	*prev;
+}				t_token;
+
+typedef struct	s_addres
+{
+	int				exit_status;
+	int				descriptor;
+	int				pipe_count;
+	int				shlvl;
+	t_token			*token;
+}				t_addres;
+
 typedef struct s_dict
 {
 	char				*key;
@@ -201,5 +239,22 @@ int			outfile_count(char *str);
 int			redir_count(char *str);
 int	check_single_quotes(char *str);
 int	check_double_quotes(char *str);
+int	fill_spaces(char **get_line, t_token **token);
+int	fill_redirections(char **get_line, t_token **token);
+int	fill_quotes_external(char **get_line, t_token **token, int quote);
+void	fill_external(char **get_line, t_token **token);
+void	fill_expression(char **get_line, t_token **token);
+void	set_token(char **get_line, t_token **token);
+int	word_len(char *get_line, char ch);
+char	*fill_word(char **get_line, char ch, int flag);
+char	*epur_str(char *str);
+char	*ft_cleanline(char *get_line);
+int	get_wordlen_expression(char **heredoc);
+char	*execute_expression(char **heredoc);
+char *find_value_env(t_env	*env, char *key);
+int	append_token(t_token **token, int type, char *str);
+int	append_env(t_env **env, char *key, char *value);
+int	remove_node_from_token(t_token **token, int index);
+void	clean_space_from_token(t_token	**token);
 
 #endif

@@ -72,7 +72,7 @@ char	**heardock_init(char *str)
 				return NULL;
 			}
 			res = ft_strjoin(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
-			printf(UMAG" gandon%s\n"GREEN,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
+			//printf(UMAG" gandon%s\n"GREEN,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 			res = ft_strjoin(res, " ");
 			//strcat(res,removeSpacesFromStr(ft_substr(s,start, i-start+1)));
 			//strcat(res, " ");
