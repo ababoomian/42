@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tokenize.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: suhovhan <suhovhan@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/19 16:42:21 by suhovhan          #+#    #+#             */
-/*   Updated: 2022/12/17 23:16:21 by suhovhan         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "./minishell.h"
 
@@ -96,6 +85,7 @@ void	fill_external(char **get_line, t_token **token)
 	i = -1;
 	while (res[++i])
 		line[i] = res[i];
+	line[++i] = '\0';
 	free(res);
 	(*get_line)--;
 	append_token(token, _EXTERNAL, line);

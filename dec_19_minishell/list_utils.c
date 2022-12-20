@@ -82,7 +82,7 @@ void	clean_space_from_token(t_token	**token)
 	ptr = *token;
 	while (tmp)
 	{
-		if (tmp->type == _SPACE)
+		if (tmp->type == _SPACE && ( tmp->prev && is_redirection(tmp->prev->type)))
 		{
 			index = tmp->index;
 			tmp = tmp->next;

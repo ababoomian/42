@@ -22,25 +22,33 @@ void	print_nodes(t_nodes *head) {
 	{
 		i = -1;
 		printf("index : %d\n", current->index);
-		while (current->heardock[++i])
-	    	printf(CYELLOW"heredoc: %d : %s\n"GREEN, i, current->heardock[i]);
+		if(current->heardock)
+			while (current->heardock[++i])
+	    		printf(CYELLOW"heredoc: %d : %s\n"GREEN, i, current->heardock[i]);
 		i = -1;
+	if(current->cmd)
 		while (current->cmd[++i])
 			printf(CYELLOW"cmd : %s\n"GREEN, current->cmd[i]);
 		i = -1;
+	if(current->infile)
 		while (current->infile[++i])
 			printf(CYELLOW"inn: %s\n"GREEN, current->infile[i]);
 		i = -1;
+	if(current->append)
 		while (current->append[++i])
 			printf(CYELLOW"append: %s\n"GREEN, current->append[i]);
 		i = -1;
+	if(current->outfile)
 		while (current->outfile[++i])
 			printf(CYELLOW"outfile: %s\n"GREEN, current->outfile[i]);
 		i = -1;
+	if(current->redir)
 		while (current->redir[++i])
 			printf(UMAG"redir: %s\n"GREEN, current->redir[i]);
 		printf(RESET"read _line %s \n"GREEN,current->rd_line);
+		print_tok(current->tok);
         current = current->next;
+
     }
 }
 
@@ -268,23 +276,27 @@ char **parse_cmd(char **str)
 t_nodes	*new_nodes(int i, char **mx)
 {
 	t_nodes		*inited;
-	char		*cmd;
-	char		*test;
+	//char		*cmd;
+	//char		*test;
 
-	cmd = get_cleaned_str_meta(mx[i]);
+	//cmd = get_cleaned_str_meta(mx[i]);
 	//cmd = "";
 	inited = NULL;
 	inited = (t_nodes *)malloc(sizeof(t_nodes));
 	//printf(UBLU"%s\n"GREEN,lexer(inited,mx[i]));
-	test = lexer(inited,mx[i]);
+	//test = lexer(inited,mx[i]);
 	if (inited == NULL)
 		return (NULL);
-	inited->heardock =heardock_init(test);
-	inited->append = append_init(test);
+	/* inited->append = append_init(test);
 	inited->infile = infile_init(test);
 	inited->outfile = outfile_init(test);
-	inited->cmd = parse_cmd(ft_smart_split(test,32));
-	inited->redir = init_redir(test);
+	inited->redir = init_redir(test); */
+	//printf("ok\n");
+	char *pars = ft_strtrim(mx[i]," "); 
+	set_token(&pars,&(inited->tok));
+	//inited->heardock = heredoc_fill(inited->tok);
+	//inited->cmd = fill_cmd(inited->tok);
+	//remove_hrd(&(inited->tok));
 	inited->index = i;
 	//free(cmd);
 	inited->next = NULL;

@@ -139,6 +139,11 @@ typedef struct s_nodes
 	int				input;
 	int				output;
 	int				index;
+	int				append_count;
+	int				heredoc_count;
+	int				infile_count;
+	int				outfile_count;
+	int				*redir_cnt;
 	char			**append;
 	char			**heardock;
 	char			**redir;
@@ -147,6 +152,7 @@ typedef struct s_nodes
 	char			**cmd;
 	char			*rd_line;
 	char			*syntax_err;
+	t_token			*tok;
 	struct s_nodes	*next;
 }					t_nodes;
 
@@ -241,20 +247,26 @@ int	check_single_quotes(char *str);
 int	check_double_quotes(char *str);
 int	fill_spaces(char **get_line, t_token **token);
 int	fill_redirections(char **get_line, t_token **token);
-int	fill_quotes_external(char **get_line, t_token **token, int quote);
+int		fill_quotes_external(char **get_line, t_token **token, int quote);
 void	fill_external(char **get_line, t_token **token);
 void	fill_expression(char **get_line, t_token **token);
 void	set_token(char **get_line, t_token **token);
-int	word_len(char *get_line, char ch);
+int		word_len(char *get_line, char ch);
 char	*fill_word(char **get_line, char ch, int flag);
 char	*epur_str(char *str);
 char	*ft_cleanline(char *get_line);
-int	get_wordlen_expression(char **heredoc);
+int		get_wordlen_expression(char **heredoc);
 char	*execute_expression(char **heredoc);
-char *find_value_env(t_env	*env, char *key);
-int	append_token(t_token **token, int type, char *str);
-int	append_env(t_env **env, char *key, char *value);
-int	remove_node_from_token(t_token **token, int index);
+char	 *find_value_env(t_env	*env, char *key);
+int		append_token(t_token **token, int type, char *str);
+int		append_env(t_env **env, char *key, char *value);
+int		remove_node_from_token(t_token **token, int index);
 void	clean_space_from_token(t_token	**token);
+void 	print_tok(t_token *tok);
+char	*ft_strtrim(char const *s1, char const *set);
+char 	**heredoc_fill(t_token *tok);
+void remove_hrd(t_token **tok);
+char **fill_cmd(t_token *tok);
+int is_redirection(int type);
 
 #endif

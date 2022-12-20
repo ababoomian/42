@@ -272,13 +272,15 @@ int main(int ac, char **av, char **env)
 	int			cpy;
 	t_env		*tenv;
 	t_nodes		*nds;
-	t_token		*tok;
+	//t_token		*tok;
 	char		*line;
 	char		**pipes;
     (void)av;
 	(void)ac;
 	
+	
 	tenv = init_env_tenv(env);
+	
 	update_shlvl(tenv);
 	printf(GREEN"wellcome to minishell : %s\n","hello");
 	signal(SIGINT,&ctrl_c);
@@ -297,16 +299,20 @@ int main(int ac, char **av, char **env)
 			add_history(line);
 		else
 		{
-			printf(UMAG"leak add: %p\n"GREEN,&tenv);
+			//printf(UMAG"leak add: %p\n"GREEN,&tenv);
 			continue ;
 		}
 		cpy = dup(0);
 		pipes = ft_smart_split(line, '|');
+		free(line);
 		nds = init_nodes(pipes);
-		set_token(&line,&tok);
+	//	set_token(&line,&tok);
 
 		//print_tok(tok);
-		//print_nodes(nds);
+		//tok = NULL;
+		//remove_hrd(&(nds->tok));
+		print_nodes(nds);
+	printf("ok\n");
 /* 		if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)
