@@ -192,7 +192,7 @@ void multi(t_nodes *nds,t_env *tenv,char **env,int size)
 				close(fd[i][0]);
 				close(fd[i][1]);
 			}
-			do_infile(nds,tenv,env);
+			exec(nds,tenv,env);
 			exit(1);
 		}
 		
@@ -212,8 +212,11 @@ void double_proc(t_nodes *nds,t_env *tenv,char **env)
 	int fd_f[2];
 	int pid;
 	pipe(fd_f);
+	print_nodes(nds);
 	while (nds != NULL)
 	{
+	//print_tok(nds);
+
 		pid = fork();
 		if(pid == 0)
 		{
@@ -223,7 +226,7 @@ void double_proc(t_nodes *nds,t_env *tenv,char **env)
 				dup2(fd_f[0],0);
 			close(fd_f[0]);
 			close(fd_f[1]);
-			do_infile(nds,tenv,env);
+			exec(nds,tenv,env);
 			exit(1);
 		}
 		nds = nds->next;
@@ -250,29 +253,51 @@ int err_index(char *str)
 	return(-1);
 }
 
-void print_tok(t_token *tok)
+void print_tok(t_nodes *nds)
 {
-	while (tok != NULL)
+	printf(" index : %d\n",nds->index);
+	while (nds->tok != NULL)
 	{
-		//if(tok->index)
-			printf(UBLU"      index : %d"GREEN,tok->index);
-		//if(tok->type)
-			printf(UBLU"      type : %d"GREEN,tok->type);
-		if(tok->token)
-			printf(UBLU"      token : %s\n"GREEN,tok->token);
-		tok = tok->next;
+		
+			printf(UBLU"      index : %d"GREEN,nds->tok->index);
+			printf(UBLU"      type : %d"GREEN,nds ->tok->type);
+		if(nds ->tok && nds ->tok->token)
+			printf(UBLU"      token : %s\n"GREEN,nds ->tok->token);
+		nds ->tok = nds->tok->next;
+		printf("ok\n");
 	}
 	
 
 }
 
+int exec(t_nodes *nds,t_env *tenv,char **env)
+{
+	int ocpy;
+	int cpy;
+
+			cpy = dup(0);
+			ocpy = dup(1);
+			heredoc(&(nds->tok),nds -> last_in_red); // <<
+			output(nds); // >
+			input(nds);	// <
+			append(nds); // >>
+			nds->cmd = fill_cmd(nds->tok);
+			//print_nodes(nds);
+			print_tok(nds);
+		if(nds->cmd && *nds->cmd)
+			execution(nds,env,tenv);
+			dup2(ocpy,1);
+			dup2(cpy,0);
+			close(cpy);
+			close(ocpy);
+	return(0);
+}
+
 
 int main(int ac, char **av, char **env)
 {
-	int			cpy;
 	t_env		*tenv;
 	t_nodes		*nds;
-	//t_token		*tok;
 	char		*line;
 	char		**pipes;
     (void)av;
@@ -295,41 +320,40 @@ int main(int ac, char **av, char **env)
 			printf("exit\n");
 			exit(1);
 		}
-		if (line[0])
-			add_history(line);
-		else
-		{
-			//printf(UMAG"leak add: %p\n"GREEN,&tenv);
+		if (!line[0])
 			continue ;
-		}
-		cpy = dup(0);
-		pipes = ft_smart_split(line, '|');
+		add_history(line);
+		pipes = ft_split(line, '|');
 		free(line);
 		nds = init_nodes(pipes);
-	//	set_token(&line,&tok);
-
-		//print_tok(tok);
-		//tok = NULL;
-		//remove_hrd(&(nds->tok));
-		print_nodes(nds);
-	printf("ok\n");
-/* 		if(mat_len(pipes) == 2)
+		if(mat_len(pipes) == 2)
 			double_proc(nds,tenv,env);
 		else if(mat_len(pipes) > 2)
 			multi(nds,tenv,env,mat_len(pipes) - 1);
 		else
+			exec(nds,tenv,env);
+	/* 		int cpy = dup(0);
+			int ocpy = dup(1);
+			//print_nodes(nds);
 			while(nds!= NULL)
 		{
-			int i = -1;
-			do_hrd(nds);
-			do_infile(nds,tenv,env);
-			if(*nds->append)
-				while(nds->append[++i])
-					append_redirect(nds->append[i]);
-				//do_outfile(nds,tenv,env);
-			nds = nds->next;
+			//int i = 0;
+			//char *tmp = ft_strdup(pipes[i]);
+			//set_token(&tmp,&(nds->tok));
+			//i++;
+			//print_tok(nds);
+			heredoc(nds); // <<
+			output(nds); // >
+			input(nds);	// <
+			append(nds); // >>
+			nds->cmd = fill_cmd(nds->tok);
+		if(nds->cmd && *nds->cmd)
+			execution(nds,env,tenv);
+			dup2(ocpy,1);
 			dup2(cpy,0);
 			close(cpy);
+			close(ocpy);
+			nds = nds->next;
 		} */
 	 }
     return (0);

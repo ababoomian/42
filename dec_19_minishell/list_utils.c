@@ -23,8 +23,10 @@ int	append_token(t_token **token, int type, char *str)
 	else
 	{
 		last_node = *token;
-		while (last_node->next != NULL)
+		while (last_node && last_node->next)
+		{
 			last_node = last_node->next;
+		}
 		new_node->prev = last_node;
 		last_node->next = new_node;
 	}
@@ -82,7 +84,7 @@ void	clean_space_from_token(t_token	**token)
 	ptr = *token;
 	while (tmp)
 	{
-		if (tmp->type == _SPACE && ( tmp->prev && is_redirection(tmp->prev->type)))
+		if (tmp && tmp->type == _SPACE )
 		{
 			index = tmp->index;
 			tmp = tmp->next;

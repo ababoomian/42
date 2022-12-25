@@ -73,17 +73,17 @@ void	outfile_redirect(char *str)
 	char	*s;
 
 	s = NULL;
-	fd = open(++str, O_RDONLY);
+	fd = open(str, O_RDONLY);
 	if (fd == -1)
 		return ;
-	dup2(1, fd);
+	dup2(fd, 0);
 	s = gnl(fd);
-	write(1, s, ft_strlen(s));
+	write(fd, s, ft_strlen(s));
 	close(fd);
 	free(s);
 }
 
-void	append_redirect(char *file)
+/* void	append_redirect(char *file)
 {
 	int	fd;
 
@@ -100,6 +100,41 @@ void	append_redirect(char *file)
 		return ;
 	}
 	return ;
+} */
+void	heredoc_no_redirect(char *str)
+{
+	char	*s;
+	int		fd;
+	int		i;
+	char	*file;
+
+	file = ft_strjoin(".\7", str);
+	i = 0;
+	//str += 2;
+	while (str[i])
+	{
+		if (str[i] == '<' || str[i] == '>' || str[i] == '-')
+		{
+			printf("%s\n", "syntax error near unexpected token `<'");
+			return ;
+		}
+		i++;
+	}
+	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf(" nooo delim :%s\n",str);
+	while (1)
+	{
+		s = readline(CYELLOW"heredoc: "GREEN);
+		if(!s)
+			return ;
+		if (strcmp(str, s) == 0)
+			break ;
+		write(fd, s, ft_strlen(s));
+		write(fd, "\n", 1);
+		free(s);
+		s = NULL;
+	}
+
 }
 
 void	heredoc_redirect(char *str)
@@ -112,7 +147,7 @@ void	heredoc_redirect(char *str)
 
 	file = ft_strjoin(".\7", str);
 	i = 0;
-	str += 2;
+	//str += 2;
 	while (str[i])
 	{
 		if (str[i] == '<' || str[i] == '>' || str[i] == '-')
@@ -123,6 +158,7 @@ void	heredoc_redirect(char *str)
 		i++;
 	}
 	fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf(" delim :%s\n",str);
 	while (1)
 	{
 		s = readline(CYELLOW"heredoc: "GREEN);

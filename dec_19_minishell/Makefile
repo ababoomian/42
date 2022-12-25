@@ -13,11 +13,11 @@ LINKERS= -L./readline_arbaboom/lib -lreadline
 RD= $(shell find ${HOME} -name readline_arbaboom 2>/dev/null)
 FORCE = $(SRCS) Makefile $(wildcard *.h)
 
-all:$(NAME)
+all: $(NAME)
 
 $(NAME):$(OBJS)
 	$(CC) ${CFLAGS} -o ${NAME} ${OBJS} $(LINKERS)
-	 mkdir -p obj && mv *.o obj
+	mkdir -p obj && mv *.o obj
 
 $(TEST): $(OBJS_TEST)
 	$(CC) $(CFLAGS) -o $(TEST) $(OBJS_TEST) $(LINKERS)

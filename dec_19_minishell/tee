@@ -1,0 +1,59 @@
+ len : 1
+hi
+
+ len : 1
+[4;34m      index : 0[01;32m[4;34m      type : 0[01;32m[4;34m      token : ls
+[01;32mok
+[4;34m      index : 2[01;32m[4;34m      type : -1[01;32m[4;34m      token : >>
+[01;32mok
+[4;34m      index : 3[01;32m[4;34m      type : -1[01;32m[4;34m      token : tee
+[01;32mok
+Makefile
+built_in.c
+cd.c
+change_env.c
+check.c
+checkers.c
+dict.c
+expand.c
+export.c
+fill_redirect.c
+ft_echo.c
+ft_exit.c
+ft_itoa.c
+ft_memcpy.c
+ft_smart_split.c
+ft_split.c
+ft_strdup.c
+ft_strlcpy.c
+ft_strtrim.c
+ft_substr.c
+hd.c
+init_counts.c
+init_fields_second.c
+list_utils.c
+main.c
+minishell
+minishell.h
+obj
+pipe.c
+quotes.c
+readline-master
+readline_arbaboom
+redirec_in.c
+redirections_utils.c
+s
+s_env.c
+str_utils.c
+t_nodes.c
+tee
+test.c
+test.txt
+token.c
+tokenize.c
+unset.c
+utils.c
+index : 0
+[0;31mcmd : ls
+[01;32m[0mread _line (null) 
+[01;32mokk

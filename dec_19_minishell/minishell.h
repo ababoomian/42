@@ -139,6 +139,8 @@ typedef struct s_nodes
 	int				input;
 	int				output;
 	int				index;
+	int				last_out_red; // >> >
+	int				last_in_red; // << <
 	int				append_count;
 	int				heredoc_count;
 	int				infile_count;
@@ -184,7 +186,7 @@ t_dict		*new_dict(char *key, char *value);
 t_dict		*init_dict(char **env);
 void		print_nodes(t_nodes *head);
 char		*parsed_str_lst(char *str);
-t_nodes		*new_nodes( int i, char **mx);
+t_nodes		*new_nodes( int i,char *mx);
 t_nodes		*init_nodes(char **mx);
 int			metacheck(char a, char b, char c);
 int			hd_count(char *str);
@@ -250,7 +252,7 @@ int	fill_redirections(char **get_line, t_token **token);
 int		fill_quotes_external(char **get_line, t_token **token, int quote);
 void	fill_external(char **get_line, t_token **token);
 void	fill_expression(char **get_line, t_token **token);
-void	set_token(char **get_line, t_token **token);
+void	set_token(char **get_line, t_token **token);// settttt 
 int		word_len(char *get_line, char ch);
 char	*fill_word(char **get_line, char ch, int flag);
 char	*epur_str(char *str);
@@ -262,11 +264,19 @@ int		append_token(t_token **token, int type, char *str);
 int		append_env(t_env **env, char *key, char *value);
 int		remove_node_from_token(t_token **token, int index);
 void	clean_space_from_token(t_token	**token);
-void 	print_tok(t_token *tok);
+void 	print_tok(t_nodes *nds);
 char	*ft_strtrim(char const *s1, char const *set);
 char 	**heredoc_fill(t_token *tok);
 void remove_hrd(t_token **tok);
 char **fill_cmd(t_token *tok);
 int is_redirection(int type);
+int heredoc(t_token **addres,int last_in_red);
+void remove_space(t_nodes *addres);
+void	heredoc_no_redirect(char *str);
+int output(t_nodes *addres);
+int input(t_nodes *addres);
+int append(t_nodes *addres);
+int exec(t_nodes *nds,t_env *tenv,char **env);
+t_token *create_token(char **get_line);
 
 #endif

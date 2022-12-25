@@ -50,9 +50,7 @@ int cmd_size(t_token *tok)
 	res = 0;
 	while (tok != NULL)
 	{
-		if(!is_redirection(tok->type) && !(tok->prev))
-			res++;
-		if(!is_redirection(tok->type) && (tok->prev && !is_redirection(tok->prev->type)))
+		if(tok && tok->type != -1 && tok->type != 1)
 			res++;
 		tok = tok->next;
 	}
@@ -76,9 +74,7 @@ char **fill_cmd(t_token *tok)
 		return(NULL);
 	while (tok != NULL)
 	{
-		if(!is_redirection(tok->type) && !(tok->prev))
-			res[++i] = ft_strdup(tok->token);
-		if(!is_redirection(tok->type) && (tok->prev && !is_redirection(tok->prev->type)))
+		if(tok && tok->type != -1 && tok->type != 1)
 			res[++i] = ft_strdup(tok->token);
 		tok = tok->next;
 	}
